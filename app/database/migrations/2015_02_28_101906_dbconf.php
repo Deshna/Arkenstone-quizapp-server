@@ -47,7 +47,7 @@ class Dbconf extends Migration {
 			$table->text('question');
 			$table->text('options')->nullable();
 			$table->text('answer')->nullable();
-			$table->integer('type');
+			$table->enum('type', ['1','2','3','4','5','6']);
 			$table->timestamps();
 		});
 		Schema::create('Response', function(Blueprint $table)

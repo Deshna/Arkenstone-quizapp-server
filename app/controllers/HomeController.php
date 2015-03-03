@@ -17,7 +17,9 @@ class HomeController extends BaseController {
 
 	public function showWelcome()
 	{
-		return View::make('hello');
+		echo '
+		<h1> QuizAPP server</h1>
+		';
 	}
 
 }

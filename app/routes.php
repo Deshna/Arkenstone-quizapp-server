@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
+Route::get('/', 'HomeController@showWelcome');
+
+Route::group(array('before'=>'API' ,'after'=>'afterAPI') ,function (){
+	Route::get('api',function(){return array('1'=>Hash::make('prateek'));});
 });

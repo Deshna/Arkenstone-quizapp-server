@@ -88,3 +88,24 @@ Route::filter('csrf', function()
 		throw new Illuminate\Session\TokenMismatchException;
 	}
 });
+
+
+Route::filter('API',function(){
+	if(Input::has('key')){
+		if(Input::get('key')!=DB::table('Env')->where('key','=','apikey')->first()->val){
+			return Error::make(401,401);
+		}
+	}
+	else if(Input::has('prateek')){
+		
+	}
+	else{
+			return Error::make(1,2);
+	}
+});
+
+Route::filter('afterAPI', function($request, $response)
+{
+	$response->header('Content-Type', 'application/json');
+	return $response;
+});
