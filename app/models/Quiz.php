@@ -1,7 +1,7 @@
 <?php
 
 
-class Quiz extends Eloquent implements  {
+class Quiz extends Eloquent   {
 
 
 	/**

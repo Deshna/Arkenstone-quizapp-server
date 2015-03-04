@@ -13,6 +13,11 @@
 
 Route::get('/', 'HomeController@showWelcome');
 
-Route::group(array('before'=>'API' ,'after'=>'afterAPI') ,function (){
-	Route::get('api',function(){return array('1'=>Hash::make('prateek'));});
+Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,function (){
+	Route::get('/quiz/{quizid}','APIController@quizInit');
+});
+
+App::missing(function($exception)
+{
+        return Error::make(404,404);
 });
