@@ -14,6 +14,7 @@ class Dbconf extends Migration {
 	{
 		Schema::drop('Env');
 		Schema::drop('Response');
+		Schema::drop('KeyStates');
 		Schema::drop('Questions');
 		Schema::drop('Quiz');
 		Schema::drop('Instructor');
@@ -34,7 +35,20 @@ class Dbconf extends Migration {
 			$table->foreign('instructor')->references('id')->on('Instructor')->onDelete('cascade');
 			$table->string('course_code', 200)->nullable();
 			$table->text('description')->nullable();
+			$table->text('keyset')->nullable();
+			$table->text('key')->nullable();
+			$table->integer('time')->default(0);
 			$table->integer('skip_auth')->default(0);
+			$table->timestamps();
+		});
+		Schema::create('KeyStates', function(Blueprint $table)
+		{
+			$table->increments('id');
+			$table->integer('quiz')->unsigned();
+			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
+			$table->string('stuent_roll', 200);
+			$table->integer('symbol_verify')->default(0);
+			$table->integer('question_get')->default(0);
 			$table->timestamps();
 		});
 		Schema::create('Questions', function(Blueprint $table)
