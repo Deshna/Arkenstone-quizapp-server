@@ -15,4 +15,13 @@ class BaseController extends Controller {
 		}
 	}
 
+	public static function check_requirements($requirements){
+
+		foreach ($requirements as $value) {
+			if(!Input::has($value))
+				return $value;
+		}
+		return false;
+	}
+
 }
