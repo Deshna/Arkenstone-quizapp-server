@@ -11,6 +11,7 @@ class Question extends Eloquent {
 	 */
 	protected $table = 'Questions';
 
+	protected $hidden = array('created_at' , 'updated_at' , 'answer' , 'quiz');
 
 
 }
