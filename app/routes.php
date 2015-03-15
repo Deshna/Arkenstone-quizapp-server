@@ -14,7 +14,10 @@
 Route::get('/', 'HomeController@showWelcome');
 
 Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,function (){
-	Route::get('/quiz/{quizid}','APIController@quizInit');
+	Route::any('/quiz','APIController@quizInit');
+	Route::any('/quiz/Auth','APIController@quizAuth');
+	Route::any('/quiz/get','APIController@quizGet');
+	Route::any('/quiz/submit','APIController@quizSubmit');
 });
 
 App::missing(function($exception)
