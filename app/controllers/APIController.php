@@ -13,14 +13,14 @@ class APIController extends BaseController {
 		}
 		$id = Input::get('quiz_id');
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return Error::make(404,404);
+		if(sizeof($couseid)!=2) return Error::make(1,9);
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return Error::make(404,404);
+		if(is_null($quiz)) return Error::make(1,9);
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return Error::make(404,404);
+			return Error::make(1,9);
 
 		$keystate = KeyState::where('student_roll' , '=' , Input::get('student_id'))
 					->where('quiz' , '=' , $quiz->id)
@@ -63,14 +63,14 @@ class APIController extends BaseController {
 		$id = Input::get('quiz_id');
 
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return Error::make(404,404);
+		if(sizeof($couseid)!=2) return Error::make(1,9);
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return Error::make(404,404);
+		if(is_null($quiz)) return Error::make(1,9);
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return Error::make(404,404);
+			return Error::make(1,9);
 
 		$keystate=KeyState::find(Input::get('uniq_id'));
 		
@@ -105,14 +105,14 @@ class APIController extends BaseController {
 		$id = Input::get('quiz_id');
 
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return Error::make(404,404);
+		if(sizeof($couseid)!=2) return Error::make(1,9);
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return Error::make(404,404);
+		if(is_null($quiz)) return Error::make(1,9);
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return Error::make(404,404);
+			return Error::make(1,9);
 
 		$keystate=KeyState::find(Input::get('uniq_id'));
 		
@@ -147,14 +147,14 @@ class APIController extends BaseController {
 		$id = Input::get('quiz_id');
 
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return Error::make(404,404);
+		if(sizeof($couseid)!=2) return Error::make(1,9);
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return Error::make(404,404);
+		if(is_null($quiz)) return Error::make(1,9);
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return Error::make(404,404);
+			return Error::make(1,9);
 
 		$keystate=KeyState::find(Input::get('uniq_id'));
 		

@@ -43,7 +43,7 @@ class Dbconf extends Migration {
 		});
 		Schema::create('KeyStates', function(Blueprint $table)
 		{
-			$table->increments('id');
+			$table->string('id',200)->primary();
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
 			$table->string('stuent_roll', 200);
