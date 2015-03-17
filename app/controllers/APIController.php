@@ -118,8 +118,8 @@ class APIController extends BaseController {
 		
 		if(is_null($keystate))
 			return Error::make(403,401);
-		else if($keystate->question_get == 1)
-			return Error::make(403,3);
+		//else if($keystate->question_get == 1)
+		//	return Error::make(403,3);
 		else if($keystate->symbol_verify == 0)
 			return Error::make(403,6);
 

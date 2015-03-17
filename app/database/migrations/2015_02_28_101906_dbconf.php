@@ -69,8 +69,8 @@ class Dbconf extends Migration {
 			$table->increments('id');
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
-			$table->string('stuent_roll', 200);
-			$table->string('stuent_name', 200)->nullable();
+			$table->string('student_roll', 200);
+			$table->string('student_name', 200)->nullable();
 			$table->text('responses');
 			$table->double('marks');
 			$table->timestamps();
