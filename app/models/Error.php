@@ -15,7 +15,8 @@ class Error{
 		'5'		=> "Invalid Passcode",
 		'6'		=> "Please complete symbol verification step",
 		'7'		=> "Invalid Respose Format",
-		'8'		=> "Submissions not allowed before question fetch"
+		'8'		=> "Submissions not allowed before question fetch",
+		'9'		=> "Invalid quiz_id"
 		);
 
 	// Error type
