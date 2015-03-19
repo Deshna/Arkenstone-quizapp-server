@@ -18,6 +18,7 @@ Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,func
 	Route::any('/quiz/Auth','APIController@quizAuth');
 	Route::any('/quiz/get','APIController@quizGet');
 	Route::any('/quiz/submit','APIController@quizSubmit');
+	Route::any('/quiz/summary','APIController@quizSummary');
 });
 
 App::missing(function($exception)

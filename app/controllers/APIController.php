@@ -184,6 +184,9 @@ class APIController extends BaseController {
 			);
 
 		$questions = Question::where('quiz' , '=' , $quiz->id)->get();
+		foreach ($questions as $key => $value) {
+			$questions[$key]->options = json_decode($value->options);
+		}
 		$send = array();
 		$send['quiz_description'] = $quiz->description;
 		$send['quiz_duration'] = $quiz->time;
@@ -279,31 +282,75 @@ class APIController extends BaseController {
 					$details['result'] = "Correct";
 				else
 				$details['result'] = "wrong";
+				$details['type'] = $ques->type;
 				$details['given_answer'] = $value->response;
 				$details['marks_obtained'] = $marks;
-				$details['correct_answer'] = $ques->answer;
-				$response->responses = json_encode($details);
-				$response->save();
-				KeyState::where('id' , '=' , Input::get('uniq_id'))->update(
-					array('submitted' => '1')
-					);
+				$details['correct_answer'] = json_decode($ques->answer);
 				$result[$value->question_id] = $details;
 			}
 		}
+		
+		$response->responses = json_encode($result);
+		$response->save();
+		KeyState::where('id' , '=' , Input::get('uniq_id'))->update(
+			array('submitted' => '1')
+		);
 
 		$ret = array();
 		$ret['message'] = "Successfully submitted response";
 		$ret['logs'] = $Errlog;
-		//$ret['marks'] = $response->marks;
-		//$ret['summary'] = $result;
-		$ret['show_summary'] = $quiz->show_summary;
-		$ret['show_marks'] = $quiz->show_marks;
+		$ret['show_result'] = (int)($quiz->show_summary || $quiz->show_marks);
 
 
 		return Error::success($ret);
 	}
 
 
+
+	public function QuizSummary()
+	{
+		$requirements=['uniq_id','quiz_id'];
+		$check  = self::check_requirements($requirements);
+		if($check){
+			return Error::make(1,100,$check);
+		}
+		$id = Input::get('quiz_id');
+
+		$couseid =  explode(":", $id);
+		if(sizeof($couseid)!=2) return Error::make(1,9);
+		
+		// Assume that $id is of form coursecode-quizid 
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return Error::make(1,9);
+
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
+			return Error::make(1,9);
+
+		$keystate=KeyState::find(Input::get('uniq_id'));
+		
+		if(is_null($keystate))
+			return Error::make(403,3);
+		else if($keystate->question_get == 0){
+			$log = new Logs;
+			$log->add(Input::get('uniq_id'),'Tried to submit Quiz before even demanding question',$quiz->id);	
+			return Error::make(403,8);
+		}
+		else if($keystate->symbol_verify == 0){
+			$log = new Logs;
+			$log->add(Input::get('uniq_id'),'Quiz demanded after before symbol verification',$quiz->id);	
+			return Error::make(403,6);
+		}
+
+		$response = UserResponse::where('keystate','=',$keystate->id)->first();
+		if(is_null($response))
+			return Error::make(1,11);
+		$response->responses=json_decode($response->responses);
+		$response->message = "Showing response";
+		$response->show_summary=$quiz->show_summary;
+		$response->show_marks=$quiz->show_marks;
+		return Error::success($response);
+
+	}
 	/*return $quiz;
 		$set = array();
 		for($i=0;$i<16;$i++)

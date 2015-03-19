@@ -10,7 +10,6 @@ class UserResponse extends Eloquent {
 	 * @var string
 	 */
 	protected $table = 'Response';
-
-
+	protected $hidden = array('created_at' , 'updated_at' , 'id' , 'quiz' , 'keystate');
 
 }

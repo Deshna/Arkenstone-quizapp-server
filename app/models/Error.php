@@ -17,7 +17,9 @@ class Error{
 		'6'		=> "Please complete symbol verification step. This event is logged to instructor",
 		'7'		=> "Invalid Respose Format. JSON body : {submit_time , submission(array of question.id and response)}",
 		'8'		=> "Submissions not allowed before question fetch. This event is logged to instructor",
-		'9'		=> "Invalid Quiz Id"
+		'9'		=> "Invalid Quiz Id",
+		'10'		=> "The Respose of this quiz is already submitted",
+		'11'		=> "The Respose of this quiz is not submitted yet"
 		);
 
 	// Error type
