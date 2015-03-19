@@ -294,8 +294,8 @@ class APIController extends BaseController {
 		$ret = array();
 		$ret['message'] = "Successfully submitted response";
 		$ret['logs'] = $Errlog;
-		$ret['marks'] = $response->marks;
-		$ret['summary'] = $result;
+		//$ret['marks'] = $response->marks;
+		//$ret['summary'] = $result;
 		$ret['show_summary'] = $quiz->show_summary;
 		$ret['show_marks'] = $quiz->show_marks;
 
