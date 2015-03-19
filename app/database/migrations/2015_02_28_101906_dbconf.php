@@ -62,7 +62,7 @@ class Dbconf extends Migration {
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
 			$table->double('marks')->nullable()->default(0.0);
 			$table->text('question');
-			$table->text('options')->nullable()->default("{}");
+			$table->text('options')->nullable();
 			$table->text('answer')->nullable();
 			$table->enum('type', ['1','2','3','4','5','6']);
 			$table->timestamps();
