@@ -86,7 +86,7 @@ class APIController extends BaseController {
 			$keystate = new KeyState;
 			$keystate->student_roll = Input::get('student_id');
 			$keystate->student_name = Input::get('student_name');
-			$keystate->symbol_verify = $quiz->skip_auth;
+			$keystate->symbol_verify = intval($quiz->skip_auth);
 			$keystate->quiz = $quiz->id;
 			$keystate->id = uniqid();
 			$keystate->save();
@@ -186,10 +186,13 @@ class APIController extends BaseController {
 		$questions = Question::where('quiz' , '=' , $quiz->id)->get();
 		foreach ($questions as $key => $value) {
 			$questions[$key]->options = json_decode($value->options);
+			$questions[$key]->marks = intval($value->marks);
+			$questions[$key]->type = intval($value->type);
+			$questions[$key]->id = intval($value->id);
 		}
 		$send = array();
 		$send['quiz_description'] = $quiz->description;
-		$send['quiz_duration'] = $quiz->time;
+		$send['quiz_duration'] = intval($quiz->time);
 		$send['questions'] = $questions;
 		if($keystate->question_get == 1)
 			$send['message'] = "Successfully transferred the quiz";
@@ -282,9 +285,9 @@ class APIController extends BaseController {
 					$details['result'] = "Correct";
 				else
 				$details['result'] = "wrong";
-				$details['type'] = $ques->type;
+				$details['type'] = intval($ques->type);
 				$details['given_answer'] = $value->response;
-				$details['marks_obtained'] = $marks;
+				$details['marks_obtained'] = floatval($marks);
 				$details['correct_answer'] = json_decode($ques->answer);
 				$result[$value->question_id] = $details;
 			}
@@ -346,8 +349,9 @@ class APIController extends BaseController {
 			return Error::make(1,11);
 		$response->responses=json_decode($response->responses);
 		$response->message = "Showing response";
-		$response->show_summary=$quiz->show_summary;
-		$response->show_marks=$quiz->show_marks;
+		$response->show_summary=intval($quiz->show_summary);
+		$response->marks=floatval($response->marks);
+		$response->show_marks=intval($quiz->show_marks);
 		return Error::success($response);
 
 	}
