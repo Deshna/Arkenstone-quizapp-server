@@ -38,15 +38,11 @@ class APIController extends BaseController {
 			case '4': // Float type
 				$a = floatval($user_answer[0]);
 				$b = floatval($correct_answer[0]);
+				$c = floatval($correct_answer[1]);
 				if(!(is_numeric($user_answer[0]) && is_numeric($correct_answer[0])))
 					return 0;
 				
-				$precision = 2;
-				$multiplier = pow(10, $precision);
-
-				$a = intval($a * $multiplier);
-				$b = intval($b * $multiplier);
-				if($a == $b)
+				if($a >= $b && $a <= $c)
 					return $final->marks;
 				break;
 			case '5' : // fill in the blanks
