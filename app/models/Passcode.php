@@ -89,12 +89,12 @@ class Passcode{
 	// Prints and array of unicodes
 	public static function printcode($codeArray)
 	{
-		/*echo '<div style="background:#555;text-align:center;padding:50px">';
+		echo '<div style="background:#555;text-align:center;padding:50px">';
 		for ($i=0; $i < sizeof($codeArray); $i++) {
 			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#111;color:#eee;padding:10px">&#'.hexdec($codeArray[$i]).'</span>';
 		}
-		echo '</div>';	*/
-		$s = self::toString($codeArray);
+		echo '</div>';	
+		/*$s = self::toString($codeArray);
 		$s1 = str_split($s);
 		echo '<span style="letter-spacing:20px;font-size:2em">'.$s.'</span>';
 		echo '<br>';
@@ -103,6 +103,6 @@ class Passcode{
 		for ($i=0; $i < sizeof($s1); $i++) {
 			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#111;color:#eee;padding:10px">'.$s1[$i].'</span>';
 		}
-		echo '</div>';
+		echo '</div>';*/
 	}
 };
