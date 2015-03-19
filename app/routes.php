@@ -21,6 +21,9 @@ Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,func
 	Route::any('/quiz/summary','APIController@quizSummary');
 });
 
+Route::get('/passcode','HomeController@passcode');
+Route::get('/passcode/{id}','HomeController@show_passcode');
+
 App::missing(function($exception)
 {
         return Error::make(404,404);

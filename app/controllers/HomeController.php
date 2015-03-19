@@ -33,6 +33,20 @@ class HomeController extends BaseController {
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
 			return Error::make(404,404);
+		$codes = json_decode($quiz->key);
+		Passcode::printcode($codes);
+
+		echo '<br><br><h3>Passcode : ';
+		echo json_encode($codes);
+		echo '</h3>';
+	}
+
+	public function passcode()
+	{
+		$code = Passcode::genCode();
+		$pass = Passcode::genPass($code);
+		Passcode::printcode($code);
+		Passcode::printcode($pass);
 	}
 
 }

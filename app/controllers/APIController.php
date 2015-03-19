@@ -368,25 +368,5 @@ class APIController extends BaseController {
 		return Error::success($response);
 
 	}
-	/*return $quiz;
-		$set = array();
-		for($i=0;$i<16;$i++)
-		{
-			$code = rand(0,65536);
-			$string = '%u'.strtoupper(dechex($code));
-			$string = preg_replace('/%u([0-9A-F]+)/', '&#x$1;', $string);
-			//echo '<h1>'.dechex($code)	.' :'.html_entity_decode($string, ENT_COMPAT, 'UTF-8');
-			array_push($set,dechex($code));
-		}
-
-		$key = array();
-		for($i=0;$i<8;$i++){
-			$j = rand(0,15);
-			array_push($key , $set[$j]);
-		}
-		echo json_encode($key);
-		echo '
-		';
-		echo json_encode($set);
-		*/
+	
 }
