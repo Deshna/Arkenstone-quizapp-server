@@ -149,7 +149,7 @@ class APIController extends BaseController {
 			if($passcode[$i] != $original[$i])
 				return Error::make(1,5);
 		}
-		return Error::success(array("result"=>"success"));
+		return Error::success(array("message"=>"success"));
 	}
 
 	public function QuizGet()

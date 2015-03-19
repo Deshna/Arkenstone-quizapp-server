@@ -47,8 +47,8 @@ class Dbconf extends Migration {
 			$table->string('id',200);
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
-			$table->string('stduent_roll', 200);
-			$table->string('stduent_name', 200);
+			$table->string('student_roll', 200);
+			$table->string('student_name', 200);
 			$table->integer('symbol_verify')->default(0);
 			$table->integer('question_get')->default(0);
 			$table->primary('id');
