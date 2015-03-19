@@ -22,6 +22,7 @@ class HomeController extends BaseController {
 		';
 	}
 
+	// Show passcode for a quiz
 	public function show_passcode($id)
 	{
 		$couseid =  explode(":", $id);
@@ -41,12 +42,40 @@ class HomeController extends BaseController {
 		echo '</h3>';
 	}
 
+	// generate passcode
 	public function passcode()
 	{
 		$code = Passcode::genCode();
 		$pass = Passcode::genPass($code);
 		Passcode::printcode($code);
 		Passcode::printcode($pass);
+		echo '<br><br><h3>Passcode : ';
+		echo json_encode($code);
+		echo '</h3>';
+	}
+
+	public function show_login()
+	{
+		return View::make('pages.login');
+	}
+
+	public function login()
+	{
+		$data = Input::all();
+
+		if (Auth::attempt($data))
+		    return Redirect::to('/');
+		else
+		{
+		    $message_arr = array('message' => 'Invalid username or password!');
+		    return View::make('pages.login', $message_arr);
+		}
+	}
+
+	public function logout()
+	{
+		Auth::logout();
+		return Redirect::Route('login');
 	}
 
 }
