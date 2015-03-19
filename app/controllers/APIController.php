@@ -296,6 +296,8 @@ class APIController extends BaseController {
 		$ret['logs'] = $Errlog;
 		$ret['marks'] = $response->marks;
 		$ret['summary'] = $result;
+		$ret['show_summary'] = $quiz->show_summary;
+		$ret['show_marks'] = $quiz->show_marks;
 
 
 		return Error::success($ret);
