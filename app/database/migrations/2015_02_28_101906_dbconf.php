@@ -51,6 +51,7 @@ class Dbconf extends Migration {
 			$table->string('student_name', 200);
 			$table->integer('symbol_verify')->default(0);
 			$table->integer('question_get')->default(0);
+			$table->integer('submitted')->default(0);
 			$table->primary('id');
 			$table->timestamps();
 		});
@@ -72,6 +73,8 @@ class Dbconf extends Migration {
 			$table->increments('id');
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
+			$table->string('keystate',200);
+			$table->foreign('keystate')->references('id')->on('KeyStates')->onDelete('cascade');
 			$table->text('responses');
 			$table->double('marks');
 			$table->timestamps();

@@ -247,8 +247,9 @@ class APIController extends BaseController {
 			return Error::make(1,7);
 
 		
-		$response = new Response;
+		$response = new UserResponse;
 		$response->quiz = $quiz->id;
+		$response->keystate = $keystate->id;
 		$submission = $newcontent->submission;
 		$result = array();
 		$Errlog = array();
@@ -281,10 +282,15 @@ class APIController extends BaseController {
 				if($marks == $ques->marks)
 					$details['result'] = "Correct";
 				else
-					$details['result'] = "wrong";
-
+				$details['result'] = "wrong";
+				$details['given_answer'] = $value->response;
 				$details['marks_obtained'] = $marks;
 				$details['correct_answer'] = $ques->answer;
+				$response->responses = json_encode($details);
+				$response->save();
+				KeyState::where('id' , '=' , Input::get('uniq_id'))->update(
+					array('submitted' => '1')
+					);
 				$result[$value->question_id] = $details;
 			}
 		}

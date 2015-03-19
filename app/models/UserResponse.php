@@ -1,7 +1,7 @@
 <?php
 
 
-class Response extends Eloquent {
+class UserResponse extends Eloquent {
 
 
 	/**
