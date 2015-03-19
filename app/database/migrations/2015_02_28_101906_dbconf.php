@@ -12,12 +12,13 @@ class Dbconf extends Migration {
 	 */
 	public function up()
 	{
-		Schema::drop('Env');
-		Schema::drop('Response');
-		Schema::drop('KeyStates');
-		Schema::drop('Questions');
-		Schema::drop('Quiz');
-		Schema::drop('Instructor');
+		Schema::dropIfExists('Env');
+		Schema::dropIfExists('Response');
+		Schema::dropIfExists('KeyStates');
+		Schema::dropIfExists('Questions');
+		Schema::dropIfExists('Quiz');
+		Schema::dropIfExists('Instructor');
+		Schema::dropIfExists('Logs');
 
 		Schema::create('Instructor', function(Blueprint $table)
 		{
@@ -43,12 +44,14 @@ class Dbconf extends Migration {
 		});
 		Schema::create('KeyStates', function(Blueprint $table)
 		{
-			$table->string('id',200)->primary();
+			$table->string('id',200);
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
-			$table->string('stuent_roll', 200);
+			$table->string('stduent_roll', 200);
+			$table->string('stduent_name', 200);
 			$table->integer('symbol_verify')->default(0);
 			$table->integer('question_get')->default(0);
+			$table->primary('id');
 			$table->timestamps();
 		});
 		Schema::create('Questions', function(Blueprint $table)
@@ -57,9 +60,9 @@ class Dbconf extends Migration {
 			$table->integer('question_no')->nullable();
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
-			$table->double('marks')->nullable();
+			$table->double('marks')->nullable()->default(0.0);
 			$table->text('question');
-			$table->text('options')->nullable();
+			$table->text('options')->nullable()->default("{}");
 			$table->text('answer')->nullable();
 			$table->enum('type', ['1','2','3','4','5','6']);
 			$table->timestamps();
@@ -69,8 +72,6 @@ class Dbconf extends Migration {
 			$table->increments('id');
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
-			$table->string('student_roll', 200);
-			$table->string('student_name', 200)->nullable();
 			$table->text('responses');
 			$table->double('marks');
 			$table->timestamps();
@@ -80,6 +81,15 @@ class Dbconf extends Migration {
 			$table->string('key',200);
 			$table->primary('key');
 			$table->string('val',1000);
+		});
+		Schema::create('Logs', function(Blueprint $table){
+			$table->increments('id');
+			$table->string('keystate',200);
+			$table->foreign('keystate')->references('id')->on('KeyStates')->onDelete('cascade');
+			$table->integer('quiz')->unsigned();
+			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
+			$table->text('message');
+			$table->timestamps();
 		});
 	}
 

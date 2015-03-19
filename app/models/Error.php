@@ -3,6 +3,7 @@ class Error{
 
 	private static $error_messages =  array(
 		#error code to error message mapping
+		'-1'	=> "",
 		'0'		=> "Some Error Occured",
 		'401'	=> "Authentication Failed",
 		'2'		=> "Authentication key Required",
@@ -10,12 +11,12 @@ class Error{
 		'100'	=> "Input field required : " ,
 		'101'	=> "" ,
 		'1'		=> "Invalid user_id",
-		'3'		=> "This Quiz is not allowed as question is already sent once",
+		'3'		=> "Invalid uniq_id",
 		'4'		=> "Invalid format for passcode",
 		'5'		=> "Invalid Passcode",
-		'6'		=> "Please complete symbol verification step",
-		'7'		=> "Invalid Respose Format",
-		'8'		=> "Submissions not allowed before question fetch",
+		'6'		=> "Please complete symbol verification step. This event is logged to instructor",
+		'7'		=> "Invalid Respose Format. JSON body : {submit_time , submission(array of question.id and response)}",
+		'8'		=> "Submissions not allowed before question fetch. This event is logged to instructor",
 		'9'		=> "Invalid quiz_id"
 		);
 
