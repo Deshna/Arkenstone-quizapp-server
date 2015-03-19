@@ -107,8 +107,8 @@ class APIController extends BaseController {
 		if($quiz->skip_auth == 0){
 			$ret['unicodes'] = json_decode($quiz->keyset);
 		}
-		$ret['result'] = "Successfully added ".Input::get('student_id')." for quiz";
-		return $ret;
+		$ret['message'] = "Successfully added ".Input::get('student_id')." for quiz";
+		return Error::success($ret);
 		
 	}
 
@@ -193,15 +193,15 @@ class APIController extends BaseController {
 		$send['quiz_duration'] = $quiz->time;
 		$send['questions'] = $questions;
 		if($keystate->question_get == 1)
-			$send['result'] = "Successfully transferred the quiz";
+			$send['message'] = "Successfully transferred the quiz";
 		else{
 			$log = new Logs;
 			$log->add(Input::get('uniq_id'),'Quiz demanded after previous '.($keystate->question_get-1)." demands",$quiz->id);
-			$send['result'] = "Warning : The quiz is previously delivered ".($keystate->question_get-1)." times. This event is logged to instructor";
+			$send['message'] = "Warning : The quiz is previously delivered ".($keystate->question_get-1)." times. This event is logged to instructor";
 		}
 
 
-		return $send;
+		return Error::success($send);
 	}
 
 	public function QuizSubmit()
@@ -290,13 +290,13 @@ class APIController extends BaseController {
 		}
 
 		$ret = array();
-		$ret['result'] = "Successfully submitted response";
+		$ret['message'] = "Successfully submitted response";
 		$ret['logs'] = $Errlog;
 		$ret['marks'] = $response->marks;
 		$ret['summary'] = $result;
 
 
-		return $ret;
+		return Error::success($ret);
 	}
 
 

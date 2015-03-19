@@ -28,7 +28,7 @@ class Error{
 		if($code == 100 || $code == 101)
 			$message.=$field;
 
-		$contents= array( 'result' => $message);
+		$contents= array( 'error' => 1 ,'message' => $message);
 
 		if($type >= 110)
 			$status = $type;
@@ -42,7 +42,7 @@ class Error{
 	public static function success($data= array())
 	{
 		$status = 200;
-
+		$data['error'] = 0;
 		$response = Response::make($data, $status);
 		return $response;
 	}
