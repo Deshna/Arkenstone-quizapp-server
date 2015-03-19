@@ -40,7 +40,7 @@ class Dbconf extends Migration {
 			$table->text('key')->nullable();
 			$table->integer('time')->default(0);
 			$table->integer('skip_auth')->default(0);
-			$table->integer('show_summary')->default(0);
+			$table->integer('show_answers')->default(0);
 			$table->integer('show_marks')->default(1);
 			$table->timestamps();
 		});

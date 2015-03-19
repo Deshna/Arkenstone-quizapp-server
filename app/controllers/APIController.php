@@ -194,7 +194,12 @@ class APIController extends BaseController {
 		$send['quiz_description'] = $quiz->description;
 		$send['quiz_duration'] = intval($quiz->time);
 		$send['questions'] = $questions;
-		if($keystate->question_get == 1)
+		if($keystate->submitted >=1){
+			$log = new Logs;
+			$log->add(Input::get('uniq_id'),'Quiz demanded after previous '.($keystate->question_get-1)." demands and ".$keystate->submitted." submissions",$quiz->id);
+			$send['message'] = "Warning : The quiz is previously submitted ".$keystate->submitted." times and delivered ".($keystate->question_get-1)." times. This event is logged to instructor";
+		}
+		else if($keystate->question_get == 1)
 			$send['message'] = "Successfully transferred the quiz";
 		else{
 			$log = new Logs;
@@ -295,14 +300,21 @@ class APIController extends BaseController {
 		
 		$response->responses = json_encode($result);
 		$response->save();
+		$keystate->submitted=$keystate->submitted+1;
 		KeyState::where('id' , '=' , Input::get('uniq_id'))->update(
-			array('submitted' => '1')
+			array('submitted' => $keystate->submitted)
 		);
 
 		$ret = array();
-		$ret['message'] = "Successfully submitted response";
+		if($keystate->submitted == 1)
+			$ret['message'] = "Successfully submitted response";
+		else{
+			$log = new Logs;
+			$log->add(Input::get('uniq_id'),'Submitted Response after '.($keystate->submitted-1)." previous submissions",$quiz->id);	
+			$ret['message'] = "Warning : The quiz is previously submitted ".($keystate->submitted-1)." times. This event is logged to instructor";
+		}
 		$ret['logs'] = $Errlog;
-		$ret['show_result'] = (int)($quiz->show_summary || $quiz->show_marks);
+		$ret['show_result'] = (int)($quiz->show_answers || $quiz->show_marks);
 
 
 		return Error::success($ret);
@@ -344,12 +356,13 @@ class APIController extends BaseController {
 			return Error::make(403,6);
 		}
 
-		$response = UserResponse::where('keystate','=',$keystate->id)->first();
+		$response = UserResponse::where('keystate','=',$keystate->id)->get();
+		$response = $response[sizeof($response)-1];
 		if(is_null($response))
 			return Error::make(1,11);
 		$response->responses=json_decode($response->responses);
 		$response->message = "Showing response";
-		$response->show_summary=intval($quiz->show_summary);
+		$response->show_answers=intval($quiz->show_answers);
 		$response->marks=floatval($response->marks);
 		$response->show_marks=intval($quiz->show_marks);
 		return Error::success($response);
