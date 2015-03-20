@@ -424,9 +424,9 @@ class APIController extends BaseController {
 		
 		
 		$data['student_id'] = (array)$ret["employeenumber"];
-		$data['student_id'] = $data['student_id']["0"];
+		//$data['student_id'] = $data['student_id']["0"];
 		$data['student_name'] = (array)$ret["cn"];
-		$data['student_name'] = $data['student_name']["0"];
-		return $data;
+		//$data['student_name'] = $data['student_name']["0"];
+		var_dump($data);
 	}
 }
