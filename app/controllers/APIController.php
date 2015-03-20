@@ -420,5 +420,6 @@ class APIController extends BaseController {
 			return Error::make(0,0);
 
 		$ret = json_decode($ret);
+		return $ret;
 	}
 }
