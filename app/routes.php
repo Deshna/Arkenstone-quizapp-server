@@ -20,6 +20,7 @@ Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,func
 	Route::any('/quiz/submit','APIController@quizSubmit');
 	Route::any('/quiz/summary','APIController@quizSummary');
 	Route::any('/add-log','APIController@addLog');
+	Route::any('/ldap-auth','APIController@ldap_auth');
 	Route::any('/{a1?}/{a2?}/{a3?}/{a4?}/{a5?}',function()
 	{
 		return Error::make(404,404);

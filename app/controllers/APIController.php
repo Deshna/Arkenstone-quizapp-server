@@ -298,8 +298,12 @@ class APIController extends BaseController {
 				$result[$value->question_id] = $details;
 			}
 		}
-		
-		$response->responses = json_encode($result);
+		$r1 = array();
+		foreach ($result as $key => $value) {
+			$value['id'] = $key;
+			array_push($r1, $value);
+		}
+		$response->responses = json_encode($r1);
 		$response->save();
 		$keystate->submitted=$keystate->submitted+1;
 		KeyState::where('id' , '=' , Input::get('uniq_id'))->update(
@@ -399,6 +403,31 @@ class APIController extends BaseController {
 		$ret=array();
 		$ret['message']=Input::get('message');
 		return Error::success($ret);
+
+	}
+
+	public function ldap_auth(){
+		$requirements=['ldap_id','ldap_password'];
+		$check  = self::check_requirements($requirements);
+		if($check){
+			return Error::make(1,100,$check);
+		}
+
+		$ldap_id = Input::get('ldap_id');
+		$ldap_password = Input::get('ldap_password');
+		$ds = ldap_connect("ldap.iitb.ac.in") or die("Unable to connect to LDAP server. Please try again later.");
+		$sr = ldap_search($ds,"dc=iitb,dc=ac,dc=in","(uid=$ldap_id)");
+		$info = ldap_get_entries($ds, $sr);
+	    $roll = $info[0]["employeenumber"][0];
+	        //print_r($info);
+		$ldap_id = $info[0]['dn'];
+		if(@ldap_bind($ds,$ldap_id,$ldap_password)){
+			return Error::success($info);
+		}
+		else
+		{
+			return '{"error":0 , "message":"Unable to login"}';
+		}
 
 	}
 }
