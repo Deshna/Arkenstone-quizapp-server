@@ -419,7 +419,10 @@ class APIController extends BaseController {
 		else if($ret=="Id" || $ret=="Pass" || $ret=="Connect")
 			return Error::make(0,0);
 
-		//$ret = json_decode($ret);
-		return $ret;
+		$ret = json_decode($ret)->0;
+		$data = array();
+		$data['student_id'] = $ret->employeenumber->0;
+		$data['student_name'] = $ret->cn->0;
+		return $data;
 	}
 }
