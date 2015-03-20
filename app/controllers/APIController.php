@@ -422,11 +422,11 @@ class APIController extends BaseController {
 		$ret = json_decode($ret);
 		$ret = (array)$ret;
 		
-		
-		$data['student_id'] = (array)$ret["employeenumber"];
-		//$data['student_id'] = $data['student_id']["0"];
-		$data['student_name'] = (array)$ret["cn"];
-		//$data['student_name'] = $data['student_name']["0"];
-		var_dump($data);
+		$s = "0";	
+		$data['student_id'] = $ret["employeenumber"]->$s;
+		$data['student_name'] = $ret["cn"]->$s;
+		$data['message'] = "Successfully Logged in";
+		return Error::Success($data);
+
 	}
 }
