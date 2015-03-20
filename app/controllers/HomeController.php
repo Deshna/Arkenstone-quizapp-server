@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\MessageBag;
 class HomeController extends BaseController {
 
 	/*
@@ -20,6 +20,13 @@ class HomeController extends BaseController {
 		echo '
 		<h1> QuizAPP server</h1>
 		';
+	}
+
+	public function show_home()
+	{
+		$quiz = Quiz::where('instructor','=',Auth::user()->id)->get();
+		View::share('quizzes',$quiz);
+		return View::make('pages.home');
 	}
 
 	// Show passcode for a quiz
@@ -78,4 +85,128 @@ class HomeController extends BaseController {
 		return Redirect::Route('login');
 	}
 
+	public function show_add_new()
+	{
+		return View::make('pages.add_new');
+	}
+
+	public function add_new()
+	{
+
+		$messageBag = new MessageBag;
+		if(!(Input::hasFile('file') && Input::file('file')->isValid())){
+			$messageBag->add('message', 'Error in recieveing file');
+			return Redirect::back()->with('error',$messageBag) ;
+		}
+
+		// Keep the file with random name in cache
+		$destinationPath = storage_path().'/cache';
+		$fileName = md5(uniqid()).'.md';
+		Input::file('file')->move($destinationPath, $fileName);
+		
+
+		$lines = array();
+		foreach(file($destinationPath.'/'.$fileName) as $line) {
+		    if(trim($line)!="")
+		    	array_push($lines,trim($line));
+		}
+		// Delete the file
+		unlink($destinationPath.'/'.$fileName);
+		// parsing Quiz
+		{
+			$lenfile = sizeof($lines);
+			if($lenfile<7){
+				$messageBag->add('message', 'The markup is Invalid');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+
+			$quiz = new Quiz;
+			$quiz->course_code = $lines[0];
+			
+			if($lines[1]!="'''")
+			{
+				$messageBag->add('message', 'Quiz Description not provided');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			$desc = '';
+			$i = 2;
+			while($i<$lenfile && $lines[$i++]!="'''"){
+				if($desc!="")
+					$desc.="\r\n";
+				$desc .= $lines[$i-1];
+			}
+
+			if($i==$lenfile){
+				$messageBag->add('message', 'Quiz Description not provided in format');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			if(intval($lines[$i]) ==0){
+				echo intval($lines[$i]);
+			}
+			$quiz->time = intval($lines[$i++]);
+			$quiz->description = $desc;
+			
+			if($i==$lenfile){
+				$messageBag->add('message', 'Tell if quiz is authenticated');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			$temp = explode(":",$lines[$i++]);
+			if(sizeof($temp)<2){
+				$messageBag->add('message', 'Tell if quiz is authenticated');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			if(trim($temp[1])=="yes")
+				$quiz->skip_auth=0;
+			else
+				$quiz->skip_auth=1;
+
+			if($i==$lenfile){
+				$messageBag->add('message', 'Tell if marks display is required');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			$temp = explode(":",$lines[$i++]);
+			if(sizeof($temp)<2){
+				$messageBag->add('message', 'Tell if marks display is required');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			if(trim($temp[1])=="yes")
+				$quiz->show_marks=1;
+			else
+				$quiz->show_marks=0;
+
+			if($i==$lenfile){
+				$messageBag->add('message', 'Tell if answer display is required');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			$temp = explode(":",$lines[$i++]);
+			if(sizeof($temp)<2){
+				$messageBag->add('message', 'Tell if answer display is required');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			if(trim($temp[1])=="yes")
+				$quiz->show_answers=1;
+			else
+				$quiz->show_answers=0;
+
+			$quiz->keyset = Passcode::genCode();
+			$quiz->key = json_encode(Passcode::genPass($quiz->keyset));
+			$quiz->keyset = json_encode($quiz->keyset);
+			$quiz->instructor = Auth::user()->id;
+			$quiz->save();
+		}
+
+		return $quiz;
+	}
+
+	public function delete_quiz($id)
+	{
+		$quiz = Quiz::find($id);
+		if(is_null($quiz))
+			return Redirect::back();
+		if(Auth::user()->id != $quiz->instructor)
+			return Redirect::back();
+
+		$quiz->delete($id);
+		return Redirect::back();
+	}	
 }

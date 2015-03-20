@@ -132,10 +132,6 @@ class APIController extends BaseController {
 		if(is_null($keystate))
 			return Error::make(403,3);
 
-		$keystate::where('id' , '=' , Input::get('uniq_id'))->update(
-			array('symbol_verify' => '1')
-			);
-
 		$passcode = json_decode(Input::get('passcode'));
 		if(!is_array($passcode) || sizeof($passcode)!=8)
 			return Error::make(1,4);
@@ -145,6 +141,11 @@ class APIController extends BaseController {
 			if($passcode[$i] != $original[$i])
 				return Error::make(1,5);
 		}
+
+		$keystate::where('id' , '=' , Input::get('uniq_id'))->update(
+			array('symbol_verify' => '1')
+			);
+		
 		return Error::success(array("message"=>"success"));
 	}
 
@@ -424,7 +425,7 @@ class APIController extends BaseController {
 		
 		
 		$data['student_id'] = (array)$ret["employeenumber"];
-		//$data['student_id'] = $data['student_id']["0"];
+		$data['student_id'] = $data['student_id']["0"];
 		$data['student_name'] = (array)$ret["cn"];
 		//$data['student_name'] = $data['student_name']["0"];
 		var_dump($data);

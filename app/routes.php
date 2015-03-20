@@ -11,7 +11,6 @@
 |
 */
 
-Route::get('/', 'HomeController@showWelcome');
 
 Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,function (){
 	Route::any('/quiz','APIController@quizInit');
@@ -31,14 +30,21 @@ Route::get('/passcode','HomeController@passcode');
 Route::get('/passcode/{id}','HomeController@show_passcode');
 
 
-// Login
-Route::get('/login',array('as'=>'login' ,'uses' => 'HomeController@show_login' , 'before' => 'guest'));
-Route::post('/login',array('as'=>'login' ,'uses' => 'HomeController@login' , 'before' => 'guest'));
-Route::any('/logout',array('as'=>'logout' ,'uses' => 'HomeController@logout'));
 
-Route::get('alluser',function ()
-{
-	return User::all();
+// URL's which cant be accessed when user is logged in
+Route::group(array('before'=>'guest'),function(){
+	Route::get('/login',array('as'=>'login' ,'uses' => 'HomeController@show_login'));
+	Route::post('/login',array('as'=>'login' ,'uses' => 'HomeController@login'));
+	Route::get('/', 'HomeController@showWelcome');
+});
+
+// URL's which can only be accessed when user is logged in
+Route::group(array('before'=>'user'),function(){
+	Route::any('/home',array('as'=>'home' ,'uses' => 'HomeController@show_home'));
+	Route::any('/logout',array('as'=>'logout' ,'uses' => 'HomeController@logout'));
+	Route::any('/delete-quiz/{id}',array('uses' => 'HomeController@delete_quiz'));
+	Route::get('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@show_add_new'));
+	Route::post('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@add_new'));
 });
 
 App::missing(function($exception)
