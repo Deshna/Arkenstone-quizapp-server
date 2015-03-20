@@ -412,22 +412,24 @@ class APIController extends BaseController {
 		if($check){
 			return Error::make(1,100,$check);
 		}
-
-		$ldap_id = Input::get('ldap_id');
-		$ldap_password = Input::get('ldap_password');
-		$ds = ldap_connect("ldap.iitb.ac.in");
-		return var_dump($ds);
-		$sr = ldap_search($ds,"dc=iitb,dc=ac,dc=in","(uid=$ldap_id)");
-		$info = ldap_get_entries($ds, $sr);
-	    $roll = $info[0]["employeenumber"][0];
-	        //print_r($info);
-		$ldap_id = $info[0]['dn'];
-		if(@ldap_bind($ds,$ldap_id,$ldap_password)){
-			return Error::success($info);
-		}
-		else
-		{
-			return '{"error":0 , "message":"Unable to login"}';
+		try {	
+			$ldap_id = Input::get('ldap_id');
+			$ldap_password = Input::get('ldap_password');
+			$ds = ldap_connect("ldap.iitb.ac.in");		
+			$sr = ldap_search($ds,"dc=iitb,dc=ac,dc=in","(uid=$ldap_id)");
+			$info = ldap_get_entries($ds, $sr);
+		    $roll = $info[0]["employeenumber"][0];
+		        //print_r($info);
+			$ldap_id = $info[0]['dn'];
+			if(@ldap_bind($ds,$ldap_id,$ldap_password)){
+				return Error::success($info);
+			}
+			else
+			{
+				return '{"error":0 , "message":"Unable to login"}';
+			}
+		} catch (Exception $e) {
+			return $e.getMessage();
 		}
 
 	}
