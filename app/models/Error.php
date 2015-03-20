@@ -10,9 +10,9 @@ class Error{
 		'404'	=> "404 Error : URL Not Found",
 		'100'	=> "Input field required : " ,
 		'101'	=> "" ,
-		'1'		=> "Invalid user_id",
+		'1'		=> "Invalid User id",
 		'3'		=> "Invalid uniq_id",
-		'4'		=> "Invalid format for passcode",
+		'4'		=> "Invalid Passcode",
 		'5'		=> "Invalid Passcode",
 		'6'		=> "Please complete symbol verification step. This event is logged to instructor",
 		'7'		=> "Invalid Respose Format. JSON body : {submit_time , submission(array of question.id and response)}",
@@ -32,10 +32,11 @@ class Error{
 
 		$contents= array( 'error' => 1 ,'message' => $message);
 
-		if($type >= 110)
+		/*if($type >= 110)
 			$status = $type;
 		else
-			$status = 412;
+			$status = 412;*/
+		$status = 200;
 
 		$response = Response::make($contents, $status,array('statusText'=>$message));
 		return $response;
