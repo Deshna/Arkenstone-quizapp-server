@@ -211,6 +211,7 @@ class APIController extends BaseController {
 		return Error::success($send);
 	}
 
+	// Submitting the QUiz
 	public function QuizSubmit()
 	{
 		$requirements=['uniq_id','quiz_id'];
@@ -321,7 +322,7 @@ class APIController extends BaseController {
 	}
 
 
-
+	// Sends back the Quiz Summary
 	public function QuizSummary()
 	{
 		$requirements=['uniq_id','quiz_id'];
@@ -366,7 +367,38 @@ class APIController extends BaseController {
 		$response->marks=floatval($response->marks);
 		$response->show_marks=intval($quiz->show_marks);
 		return Error::success($response);
-
 	}
 	
+	public function addLog()
+	{
+		$requirements=['uniq_id','quiz_id','message'];
+		$check  = self::check_requirements($requirements);
+		if($check){
+			return Error::make(1,100,$check);
+		}
+		$id = Input::get('quiz_id');
+
+		$couseid =  explode(":", $id);
+		if(sizeof($couseid)!=2) return Error::make(1,9);
+		
+		// Assume that $id is of form coursecode-quizid 
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return Error::make(1,9);
+
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
+			return Error::make(1,9);
+
+		$keystate=KeyState::find(Input::get('uniq_id'));
+		
+		if(is_null($keystate))
+			return Error::make(403,3);
+
+		$log = new Logs;
+		$log->add(Input::get('uniq_id'),Input::get('message'),$quiz->id);	
+
+		$ret=array();
+		$ret['message']=Input::get('message');
+		return Error::success($ret);
+
+	}
 }

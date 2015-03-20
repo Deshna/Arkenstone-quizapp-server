@@ -19,6 +19,7 @@ Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,func
 	Route::any('/quiz/get','APIController@quizGet');
 	Route::any('/quiz/submit','APIController@quizSubmit');
 	Route::any('/quiz/summary','APIController@quizSummary');
+	Route::any('/add-log','APIController@addLog');
 	Route::any('/{a1?}/{a2?}/{a3?}/{a4?}/{a5?}',function()
 	{
 		return Error::make(404,404);
@@ -33,6 +34,12 @@ Route::get('/passcode/{id}','HomeController@show_passcode');
 Route::get('/login',array('as'=>'login' ,'uses' => 'HomeController@show_login' , 'before' => 'guest'));
 Route::post('/login',array('as'=>'login' ,'uses' => 'HomeController@login' , 'before' => 'guest'));
 Route::any('/logout',array('as'=>'logout' ,'uses' => 'HomeController@logout'));
+
+Route::get('alluser',function ()
+{
+	return User::all();
+});
+
 App::missing(function($exception)
 {
       return  "<h1>404 Error!!</h1>";
