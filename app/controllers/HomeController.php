@@ -19,6 +19,7 @@ class HomeController extends BaseController {
 	{
 		echo '
 		<h1> QuizAPP server</h1>
+		<a href="'.URL::route('login').'">Login</a>
 		';
 	}
 
@@ -112,9 +113,9 @@ class HomeController extends BaseController {
 		}
 		// Delete the file
 		unlink($destinationPath.'/'.$fileName);
+		$lenfile = sizeof($lines);
 		// parsing Quiz
 		{
-			$lenfile = sizeof($lines);
 			if($lenfile<7){
 				$messageBag->add('message', 'The markup is Invalid');
 				return Redirect::back()->with('error',$messageBag) ;
@@ -195,7 +196,83 @@ class HomeController extends BaseController {
 			$quiz->save();
 		}
 
-		return $quiz;
+		
+		while($i < $lenfile && !(strpos($lines[$i++],"**********") !==false));
+
+		while($i < $lenfile)
+		{
+			$ques = array();
+			while($i<$lenfile && !(strpos($lines[$i],"**********") !==false)){
+				array_push($ques, $lines[$i]);
+				$i++;
+			}
+			
+			// Parsing a Question Now
+			$breakloop=0;
+			while(($breakloop++) == 0)
+			{
+				$len = sizeof($ques);
+				if($len<9)
+					break;
+				$q = new Question;
+				$q->quiz = $quiz->id;
+				$j = 0;
+				
+				$q->question_no = $ques[$j++];
+				$q->marks = floatval($ques[$j++]);
+				
+				if($ques[$j++]!="'''") break;
+
+				$q->question = "";
+				while($j<$len && $ques[$j++]!="'''") $q->question.=$ques[$j-1];	
+				
+
+				$q->type = intval($ques[$j++]);
+				if(!in_array($q->type, array(1,2,3,4,5,6))) break;
+
+				$options = array();
+				$answer = array();
+				
+				if($ques[$j++]!="'''") break;
+				$count = "a";
+				while($j<$len && $ques[$j]!="'''"){
+					if($q->type == 1 || $q->type==2){
+						
+						$ans = array();
+						$ans['id']=$count;
+						
+						if($ques[$j][0]=="*"){
+							array_push($answer, $count);
+							$ans['text']=substr($ques[$j], 2);
+						}
+						else
+							$ans['text']=$ques[$j];
+						array_push($options, $ans);
+						$count++;
+					}
+					else if($q->type ==4){
+						array_push($answer, floatval($ques[$j]));
+					}
+					else if($q->type ==3){
+						array_push($answer, intval($ques[$j]));
+					}
+					else if($q->type ==5){
+						array_push($answer, $ques[$j]);
+					}
+					$j++;
+				}
+				if($q->type == 4 && sizeof($answer) < 2)
+					break;
+				
+				$q->options = json_encode($options);
+				$q->answer = json_encode($answer);
+				$q->save();
+
+			}
+			$i++;
+		}
+		
+		return Question::where('quiz','=',$quiz->id)->get();
 	}
 
 	public function delete_quiz($id)

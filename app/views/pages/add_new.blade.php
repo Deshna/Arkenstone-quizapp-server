@@ -29,6 +29,9 @@
                                             <label>File input (2MB max)</label>
                                             <input type="file" name="file" required>
                                         </div>
+                                        <div class="form-group">
+                                            <a href="{{URL::asset('newquiz.md')}}">Click here to download sample markdown file</a>
+                                        </div>
                                         <button type="submit" class="btn btn-info">Submit Button</button>
                                         <button type="reset" class="btn btn-default">Reset Button</button>
                                     </form>

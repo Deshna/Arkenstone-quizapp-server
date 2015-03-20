@@ -60,7 +60,7 @@ class Dbconf extends Migration {
 		Schema::create('Questions', function(Blueprint $table)
 		{
 			$table->increments('id');
-			$table->integer('question_no')->nullable();
+			$table->string('question_no',20)->nullable();
 			$table->integer('quiz')->unsigned();
 			$table->foreign('quiz')->references('id')->on('Quiz')->onDelete('cascade');
 			$table->double('marks')->nullable()->default(0.0);
