@@ -420,9 +420,11 @@ class APIController extends BaseController {
 			return Error::make(0,0);
 
 		$ret = json_decode($ret);
-		/*$data = array();
-		$data['student_id'] = $ret->employeenumber->0;
-		$data['student_name'] = $ret->cn->0;*/
-		return (array)$ret;
+		$ret = (array)$ret;
+		$ret = $ret["0"];
+		
+		$data['student_id'] = $ret->employeenumber;
+		$data['student_name'] = $ret->cn;
+		return $data;
 	}
 }
