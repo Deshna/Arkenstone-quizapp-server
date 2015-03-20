@@ -421,7 +421,7 @@ class APIController extends BaseController {
 
 		$ret = json_decode($ret);
 		$ret = (array)$ret;
-		$ret = $ret["0"];
+		//$ret = $ret["0"];
 		
 		/*$data['student_id'] = $ret->employeenumber;
 		$data['student_name'] = $ret->cn;*/
