@@ -412,25 +412,11 @@ class APIController extends BaseController {
 		if($check){
 			return Error::make(1,100,$check);
 		}
-		try {	
-			$ldap_id = Input::get('ldap_id');
-			$ldap_password = Input::get('ldap_password');
-			$ds = ldap_connect("dap.iitb.ac.in");		
-			$sr = ldap_search($ds,"dc=iitb,dc=ac,dc=in","(uid=$ldap_id)");
-			$info = ldap_get_entries($ds, $sr);
-		    $roll = $info[0]["employeenumber"][0];
-		        //print_r($info);
-			$ldap_id = $info[0]['dn'];
-			if(@ldap_bind($ds,$ldap_id,$ldap_password)){
-				return Error::success($info);
-			}
-			else
-			{
-				return '{"error":0 , "message":"Unable to login"}';
-			}
-		} catch (Exception $e) {
-			return $e->getMessage();
+		$ret = file_get_contents("http://www.cse.iitb.ac.in/~prateekchandan/ldap.php?user=".Input::get('ldap_id')."&pass=".Input::get('ldap_password'));
+		if($ret=="Auth"){
+			return Error::make(1,12);
 		}
-
+		else if($ret=="Id" || $ret=="Pass" || $ret=="Connect")
+			return Error::make(0,0);
 	}
 }
