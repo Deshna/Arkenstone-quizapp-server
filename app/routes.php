@@ -43,6 +43,7 @@ Route::group(array('before'=>'user'),function(){
 	Route::any('/home',array('as'=>'home' ,'uses' => 'HomeController@show_home'));
 	Route::any('/logout',array('as'=>'logout' ,'uses' => 'HomeController@logout'));
 	Route::any('/delete-quiz/{id}',array('uses' => 'HomeController@delete_quiz'));
+	Route::any('/quiz/{id}',array('uses' => 'HomeController@show_quiz'));
 	Route::get('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@show_add_new'));
 	Route::post('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@add_new'));
 });

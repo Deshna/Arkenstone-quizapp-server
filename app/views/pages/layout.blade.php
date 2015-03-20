@@ -51,7 +51,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Welcome , {{Auth::user()->name}}</a>
+                <a class="navbar-brand" href="#">Welcome , {{Auth::user()->name}}</a>
             </div>
             <!-- /.navbar-header -->
 

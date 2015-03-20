@@ -30,7 +30,8 @@
                                             </div>
                                             <div class="col-md-12">
                                             	<br>
-                                            	<a class="btn btn-danger" href="{{URL::to('/delete-quiz')}}/{{$quiz->id}}">Delete this Quiz</a>
+                                            	<a class="btn btn-success" href="{{URL::to('/quiz')}}/{{$quiz->course_code}}:{{$quiz->id}}">See Quiz</a>
+                                                <a class="btn btn-danger" href="{{URL::to('/delete-quiz')}}/{{$quiz->course_code}}:{{$quiz->id}}">Delete this Quiz</a>
                                             </div>
                                         </div>
                                     </div>

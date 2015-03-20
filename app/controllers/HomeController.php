@@ -34,20 +34,16 @@ class HomeController extends BaseController {
 	public function show_passcode($id)
 	{
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return Error::make(404,404);
+		if(sizeof($couseid)!=2) return App::abort(404);
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return Error::make(404,404);
+		if(is_null($quiz)) return App::abort(404);
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return Error::make(404,404);
+			return App::abort(404);
 		$codes = json_decode($quiz->key);
 		Passcode::printcode($codes);
-
-		echo '<br><br><h3>Passcode : ';
-		echo json_encode($codes);
-		echo '</h3>';
 	}
 
 	// generate passcode
@@ -57,9 +53,6 @@ class HomeController extends BaseController {
 		$pass = Passcode::genPass($code);
 		Passcode::printcode($code);
 		Passcode::printcode($pass);
-		echo '<br><br><h3>Passcode : ';
-		echo json_encode($code);
-		echo '</h3>';
 	}
 
 	public function show_login()
@@ -91,6 +84,7 @@ class HomeController extends BaseController {
 		return View::make('pages.add_new');
 	}
 
+	// Function to add new Quiz
 	public function add_new()
 	{
 
@@ -272,18 +266,45 @@ class HomeController extends BaseController {
 			$i++;
 		}
 		
-		return Question::where('quiz','=',$quiz->id)->get();
+		return Redirect::to('/quiz/'.$quiz->course_code.":".$quiz->id);
 	}
 
+	// Function to delete the Quiz
 	public function delete_quiz($id)
 	{
-		$quiz = Quiz::find($id);
-		if(is_null($quiz))
-			return Redirect::back();
-		if(Auth::user()->id != $quiz->instructor)
-			return Redirect::back();
+		$couseid =  explode(":", $id);
+		if(sizeof($couseid)!=2) return App::abort(404);
+		
+		// Assume that $id is of form coursecode-quizid 
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return App::abort(404);
 
-		$quiz->delete($id);
-		return Redirect::back();
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
+			return App::abort(404);
+
+		if(Auth::user()->id != $quiz->instructor)
+			return App::abort(404);
 	}	
+
+	// Function to show a quiz
+	public function show_quiz($id)
+	{
+		$couseid =  explode(":", $id);
+		if(sizeof($couseid)!=2) return App::abort(404);
+		
+		// Assume that $id is of form coursecode-quizid 
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return App::abort(404);
+
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
+			return App::abort(404);
+
+		if(Auth::user()->id != $quiz->instructor)
+			return App::abort(404);
+
+		View::share('quiz',$quiz);
+		$questions = Question::where('quiz','=',$quiz->id)->get();
+		View::share('questions',$questions);
+		return View::make('pages.quiz');
+	}
 }
