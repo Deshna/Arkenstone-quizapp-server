@@ -429,7 +429,7 @@ class APIController extends BaseController {
 				return '{"error":0 , "message":"Unable to login"}';
 			}
 		} catch (Exception $e) {
-			return $e.getMessage();
+			return $e->getMessage();
 		}
 
 	}
