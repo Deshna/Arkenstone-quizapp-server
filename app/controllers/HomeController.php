@@ -273,17 +273,20 @@ class HomeController extends BaseController {
 	public function delete_quiz($id)
 	{
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return App::abort(404);
+		if(sizeof($couseid)!=2) return Redirect::Route('home');
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return App::abort(404);
+		if(is_null($quiz)) return Redirect::Route('home');
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return App::abort(404);
+			return Redirect::Route('home');
 
 		if(Auth::user()->id != $quiz->instructor)
-			return App::abort(404);
+			return Redirect::Route('home');
+
+		$quiz->delete();
+		return Redirect::Route('home');
 	}	
 
 	// Function to show a quiz
@@ -304,6 +307,57 @@ class HomeController extends BaseController {
 
 		View::share('quiz',$quiz);
 		$questions = Question::where('quiz','=',$quiz->id)->get();
+		foreach ($questions as $key => $question) {
+			$question->print_answer = "";
+			$question->answer=json_decode($question->answer);
+			$question->options=json_decode($question->options);
+			switch ($question->type) {
+				case 1:
+					$question->print_type = "Single Option Correct";
+					$options = array();
+					foreach ($question->options as $key => $value) {
+						if($value->id==$question->answer[0])
+							$value->ans = 1;
+						else
+							$value->ans = 0;
+						$options[$key]=$value;
+					}
+					$question->options = $options;
+					break;
+				case 2:
+					$question->print_type = "Multiple Option Correct";
+					$options = array();
+					foreach ($question->options as $key => $value) {
+						if(in_array($value->id,$question->answer))
+							$value->ans = 1;
+						else
+							$value->ans = 0;
+						$options[$key]=$value;
+					}
+					$question->options = $options;
+					break;
+				case 3:
+					$question->print_type = "Integer Answer";
+					$question->print_answer = $question->answer[0];
+					break;
+				case 4:
+					$question->print_type = "Float Answer";
+					$question->print_answer = $question->answer[0].' to '.$question->answer[1];;
+					break;
+				case 5:
+					$question->print_type = "Fill in the Blanks";
+					foreach ($question->answer as $key => $value) {
+						if($question->print_answer != "")
+							$question->print_answer.=" , ";
+						$question->print_answer .= $value;
+					}
+					break;
+				default:
+					$question->print_type = "Unknown Type";
+					break;
+			}
+			$questions[$key]=$question;
+		}
 		View::share('questions',$questions);
 		return View::make('pages.quiz');
 	}

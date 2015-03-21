@@ -1,9 +1,7 @@
 CS101
 
 '''
-This is a demo Quiz
-dwdqwdqwdqwd
-qwdqwdqwd
+This is a demo Quiz template
 '''
 
 500 seconds
