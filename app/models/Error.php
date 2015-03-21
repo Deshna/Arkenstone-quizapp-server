@@ -28,7 +28,7 @@ class Error{
 	{
 		$message=self::$error_messages[$code];
 
-		if($code == 100 || $code == 101)
+		//if($code == 100 || $code == 101)
 			$message.=$field;
 
 		$contents= array( 'error' => 1 ,'message' => $message);

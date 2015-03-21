@@ -361,4 +361,47 @@ class HomeController extends BaseController {
 		View::share('questions',$questions);
 		return View::make('pages.quiz');
 	}
+
+	public function show_quiz_summary($id)
+	{
+		$couseid =  explode(":", $id);
+		if(sizeof($couseid)!=2) return App::abort(404);
+		
+		// Assume that $id is of form coursecode-quizid 
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return App::abort(404);
+
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
+			return App::abort(404);
+
+		if(Auth::user()->id != $quiz->instructor)
+			return App::abort(404);
+
+		$keystates = KeyState::where('quiz','=',$quiz->id)->get();
+		$results = array();
+		foreach ($keystates as $key => $keystate) {
+			$keystate->logs=array();
+			$keystate->results=array();
+			$results[$keystate->id] = $keystate;
+		}
+		$responses = UserResponse::where('quiz','=',$quiz->id)->get();
+		foreach ($responses as $key => $response) {
+			$keystate = $results[$response->keystate]->results;
+			$response->responses = json_decode($response->responses);
+			array_push($keystate, $response);
+			$results[$response->keystate]->results = $keystate;
+		}
+		$logs = Logs::where('quiz','=',$quiz->id)->get();
+		foreach ($logs as $key => $log) {
+			$keystate = $results[$log->keystate]->logs;
+			array_push($keystate, $log);
+			$results[$log->keystate]->logs = $keystate;
+		}
+		function cmp($a,$b){
+			return $b->student_roll < $a->student_roll;
+		}
+		usort($results,'cmp');
+		View::Share('results',$results);
+		return View::make('pages.result');
+	}
 }

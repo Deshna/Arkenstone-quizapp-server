@@ -17,6 +17,7 @@
                 <div class="col-md-12">
                     <br>
                     <a class="btn btn-danger" href="{{URL::to('/delete-quiz')}}/{{$quiz->course_code}}:{{$quiz->id}}" onclick="return confirm('Are you sure want to delete this Quiz?');">Delete this Quiz</a>
+                    <a class="btn btn-info" href="{{URL::to('/summary')}}/{{$quiz->course_code}}:{{$quiz->id}}">See submissions</a>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -34,6 +35,7 @@
                     </div>
                 </div>
             </div>
+            <hr>
             <div class="row">
                 <div class="col-lg-12">
                     <div class="panel panel-yellow">

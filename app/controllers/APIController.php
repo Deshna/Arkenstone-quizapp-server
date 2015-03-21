@@ -132,11 +132,17 @@ class APIController extends BaseController {
 		if(is_null($keystate))
 			return Error::make(403,3);
 
-		$passcode = json_decode(Input::get('passcode'));
+		try {
+			$passcode = json_decode(Input::get('passcode'));
+		} catch (Exception $e) {
+			return Error::make(0,-1,$e->getMessage());
+		}
+			
 		if(!is_array($passcode) || sizeof($passcode)!=8)
 			return Error::make(1,4);
 
 		$original = json_decode($quiz->key);
+		
 		for($i = 0 ; $i <8 ; $i++ ){
 			if($passcode[$i] != $original[$i])
 				return Error::make(1,5);
