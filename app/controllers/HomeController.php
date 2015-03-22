@@ -307,7 +307,7 @@ class HomeController extends BaseController {
 
 		View::share('quiz',$quiz);
 		$questions = Question::where('quiz','=',$quiz->id)->get();
-		foreach ($questions as $key => $question) {
+		foreach ($questions as $key1 => $question) {
 			$question->print_answer = "";
 			$question->answer=json_decode($question->answer);
 			$question->options=json_decode($question->options);
@@ -356,7 +356,7 @@ class HomeController extends BaseController {
 					$question->print_type = "Unknown Type";
 					break;
 			}
-			$questions[$key]=$question;
+			$questions[$key1]=$question;
 		}
 		View::share('questions',$questions);
 		return View::make('pages.quiz');
