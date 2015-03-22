@@ -78,8 +78,10 @@ class APIController extends BaseController {
 					->where('quiz' , '=' , $quiz->id)
 					->first();
 
-		if(!is_null($keystate)){
-			
+		$ret = array();
+
+		if(!is_null($keystate)){	
+			$ret['message'] = Input::get('student_id')." already present for quiz";
 		}
 		else{
 			$keystate = new KeyState;
@@ -92,17 +94,16 @@ class APIController extends BaseController {
 			$keystate = KeyState::where('student_roll' , '=' , Input::get('student_id'))
 					->where('quiz' , '=' , $quiz->id)
 					->first();
+			$ret['message'] = "Successfully added ".Input::get('student_id')." for quiz";
 		}
 
 
-		$ret = array();
 		$ret['font_id'] = -1;
 		$ret['skip_symbol_auth'] = $quiz->skip_auth;
 		$ret['uniq_id'] = $keystate->id;
 		if($quiz->skip_auth == 0){
 			$ret['unicodes'] = json_decode($quiz->keyset);
 		}
-		$ret['message'] = "Successfully added ".Input::get('student_id')." for quiz";
 		return Error::success($ret);
 		
 	}
