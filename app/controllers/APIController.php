@@ -79,8 +79,7 @@ class APIController extends BaseController {
 					->first();
 
 		if(!is_null($keystate)){
-			if($keystate->question_get == 1)
-				return Error::make(403,3);
+			
 		}
 		else{
 			$keystate = new KeyState;
