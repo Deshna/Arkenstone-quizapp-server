@@ -364,6 +364,7 @@ class HomeController extends BaseController {
 
 	public function show_quiz_summary($id)
 	{
+
 		$couseid =  explode(":", $id);
 		if(sizeof($couseid)!=2) return App::abort(404);
 		
@@ -377,6 +378,11 @@ class HomeController extends BaseController {
 		if(Auth::user()->id != $quiz->instructor)
 			return App::abort(404);
 
+		$qtemp = Question::where('quiz','=',$quiz->id)->get();
+		$questionsmap = array();
+		foreach ($qtemp as $key => $q) {
+			$questionsmap[$q->id] = $q->question_no;
+		}
 		$keystates = KeyState::where('quiz','=',$quiz->id)->get();
 		$results = array();
 		foreach ($keystates as $key => $keystate) {
@@ -387,7 +393,11 @@ class HomeController extends BaseController {
 		$responses = UserResponse::where('quiz','=',$quiz->id)->get();
 		foreach ($responses as $key => $response) {
 			$keystate = $results[$response->keystate]->results;
-			$response->responses = json_decode($response->responses);
+			$temp = json_decode($response->responses);
+			foreach ($temp as $key => $value) {
+				$temp[$key]->qno = $questionsmap[$value->id];
+			}
+			$response->responses = $temp;
 			array_push($keystate, $response);
 			$results[$response->keystate]->results = $keystate;
 		}
