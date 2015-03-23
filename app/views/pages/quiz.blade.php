@@ -50,6 +50,7 @@
                                     <div class="panel-heading">
                                         <h4 class="panel-title">
                                             <a data-toggle="collapse" data-parent="#accordion" href="#q{{$question->id}}" aria-expanded="false" class="collapsed">Question No.: {{$question->question_no}} ({{$question->print_type}})</a>
+                                            <span class="pull-right">Marks : {{$question->marks}}</span>
                                         </h4>
                                     </div>
                                     <div id="q{{$question->id}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">

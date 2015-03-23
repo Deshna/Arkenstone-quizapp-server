@@ -127,7 +127,7 @@ class APIController extends BaseController {
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
 			return Error::make(1,9);
 
-		$keystate=KeyState::find(Input::get('uniq_id'));
+		$keystate=KeyState::where('quiz','=',$quiz->id)->find(Input::get('uniq_id'));
 		
 		if(is_null($keystate))
 			return Error::make(403,3);
@@ -174,7 +174,7 @@ class APIController extends BaseController {
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
 			return Error::make(1,9);
 
-		$keystate=KeyState::find(Input::get('uniq_id'));
+		$keystate=KeyState::where('quiz','=',$quiz->id)->find(Input::get('uniq_id'));
 		
 		if(is_null($keystate))
 			return Error::make(403,3);
@@ -238,7 +238,7 @@ class APIController extends BaseController {
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
 			return Error::make(1,9);
 
-		$keystate=KeyState::find(Input::get('uniq_id'));
+		$keystate=KeyState::where('quiz','=',$quiz->id)->find(Input::get('uniq_id'));
 		
 		if(is_null($keystate))
 			return Error::make(403,3);
@@ -353,7 +353,7 @@ class APIController extends BaseController {
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
 			return Error::make(1,9);
 
-		$keystate=KeyState::find(Input::get('uniq_id'));
+		$keystate=KeyState::where('quiz','=',$quiz->id)->find(Input::get('uniq_id'));
 		
 		if(is_null($keystate))
 			return Error::make(403,3);
@@ -399,7 +399,7 @@ class APIController extends BaseController {
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
 			return Error::make(1,9);
 
-		$keystate=KeyState::find(Input::get('uniq_id'));
+		$keystate=KeyState::where('quiz','=',$quiz->id)->find(Input::get('uniq_id'));
 		
 		if(is_null($keystate))
 			return Error::make(403,3);
