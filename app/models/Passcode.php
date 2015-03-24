@@ -1,7 +1,10 @@
 <?php
 
 class Passcode{
-	public static $ranges=array(
+	public static $ranges=
+	array([33,126],[57344,57691]);
+
+	/*array(
 		[386,443],[564,687],[976,1051],[1062,1081],[1121,1154],
 		[1162,1228],[1283,1319],[1330,1336],[1377,1415],[1488,1514],
 		[1542,1546],[1568,1610],[1633,1647],[1654,1699],[1701,1727],
@@ -44,7 +47,7 @@ class Passcode{
 		[58130,58143],[58144,58223],[58240,58394],[58397,58398],[58405,58420],
 		[58430,58437],[58481,58494],[58507,58564],[58627,58629],[58653,58668],
 		[60000,60500],[60501,61000],[61000,61443],[65020,65020]
-		);
+		);*/
 	
 	// Generates a random 16 unicodes from the bove valid codes
 	public static function genCode(){
@@ -88,8 +91,16 @@ class Passcode{
 
 	// Prints and array of unicodes
 	public static function printcode($codeArray)
-	{
-		echo '<div style="background:#555;text-align:center;padding:50px">';
+	{	
+		echo '
+			<style>
+				@font-face{
+					font-family: arkenstone;
+    				src: url('.URL::asset('template/dist/fonts/arkenstone-symbol-font-v1.ttf').');
+				}
+			</style>
+		';
+		echo '<div style="font-family:arkenstone;background:#555;text-align:center;padding:50px">';
 		for ($i=0; $i < sizeof($codeArray); $i++) {
 			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#111;color:#eee;padding:10px">&#'.hexdec($codeArray[$i]).'</span>';
 		}
