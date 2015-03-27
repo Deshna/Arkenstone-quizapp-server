@@ -12,6 +12,11 @@
             		<blockquote>No Submissions Till Now</blockquote>
             	</div>
             	@else
+                    <div class="col-lg-12"> 
+                        <a href="{{URL::to('/summary')}}/{{$quiz->course_code}}:{{$quiz->id}}/submission" class="btn btn-warning">Download Submission in CSV</a>
+                        <a href="{{URL::to('/summary')}}/{{$quiz->course_code}}:{{$quiz->id}}/logs" class="btn btn-info">Download Logs in CSV</a>
+                    </div>
+                    <hr>
 					<div class="col-lg-12">
                     <div class="panel panel-green">
                         <div class="panel-heading">

@@ -18,6 +18,7 @@
                     <br>
                     <a class="btn btn-danger" href="{{URL::to('/delete-quiz')}}/{{$quiz->course_code}}:{{$quiz->id}}" onclick="return confirm('Are you sure want to delete this Quiz?');">Delete this Quiz</a>
                     <a class="btn btn-info" href="{{URL::to('/summary')}}/{{$quiz->course_code}}:{{$quiz->id}}">See submissions</a>
+                    <a class="btn btn-warning" href="{{URL::to('/quiz')}}/{{$quiz->course_code}}:{{$quiz->id}}/download">Download Quiz</a>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -29,7 +30,7 @@
                             Quiz Description
                         </div>
                         <div class="panel-body">
-                            <p>{{$quiz->description}}</p>
+                            <p>{{str_replace('\n', '<br>', $quiz->description)}}</p>
                             <p><strong>Duration : {{$quiz->time}} seconds</strong></p>
                         </div>
                     </div>
@@ -56,7 +57,7 @@
                                     <div id="q{{$question->id}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                                         <div class="panel-body">
                                             <div class="col-md-12">
-                                                {{$question->question}}
+                                                {{str_replace('\n', '<br>', $question->question)}}
                                             </div>
                                             @if($question->type ==3 || $question->type ==5  ||  $question->type ==4 )
                                             <div class="col-md-12">
