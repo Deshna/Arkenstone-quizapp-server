@@ -27,7 +27,6 @@ Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,func
 });
 
 Route::get('/passcode','HomeController@passcode');
-Route::get('/passcode/{id}','HomeController@show_passcode');
 
 
 
@@ -44,7 +43,10 @@ Route::group(array('before'=>'user'),function(){
 	Route::any('/logout',array('as'=>'logout' ,'uses' => 'HomeController@logout'));
 	Route::any('/delete-quiz/{id}',array('uses' => 'HomeController@delete_quiz'));
 	Route::any('/quiz/{id}',array('uses' => 'HomeController@show_quiz'));
+	Route::any('/quiz/{id}/download',array('uses' => 'HomeController@download_quiz'));
 	Route::any('/summary/{id}',array('uses' => 'HomeController@show_quiz_summary'));
+	Route::any('/summary/{id}/submission',array('uses' => 'HomeController@download_quiz_summary'));
+	Route::any('/summary/{id}/logs',array('uses' => 'HomeController@download_quiz_summary_log'));
 	Route::get('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@show_add_new'));
 	Route::post('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@add_new'));
 });
