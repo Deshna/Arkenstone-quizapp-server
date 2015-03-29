@@ -30,22 +30,6 @@ class HomeController extends BaseController {
 		return View::make('pages.home');
 	}
 
-	// Show passcode for a quiz
-	public function show_passcode($id)
-	{
-		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return App::abort(404);
-		
-		// Assume that $id is of form coursecode-quizid 
-		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return App::abort(404);
-
-		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return App::abort(404);
-		$codes = json_decode($quiz->key);
-		Passcode::printcode($codes);
-	}
-
 	// generate passcode
 	public function passcode()
 	{
@@ -64,12 +48,53 @@ class HomeController extends BaseController {
 	{
 		$data = Input::all();
 
-		if (Auth::attempt($data))
+		if (Input::get('email') == "demo@iitb.ac.in" && Input::get('password') == 'demo'){
+			Auth::login(User::find(1));
 		    return Redirect::to('/');
+		}
 		else
 		{
-		    $message_arr = array('message' => 'Invalid username or password!');
-		    return View::make('pages.login', $message_arr);
+			$ldap_id = explode('@', Input::get('email'));
+			if(sizeof($ldap_id) < 2 || $ldap_id[1] != "iitb.ac.in"){
+				$message_arr = array('message' => 'Invalid email');
+		    	return View::make('pages.login', $message_arr);
+			}
+			$ldap_id = $ldap_id[0];
+			$check = 0;
+			try {
+				$ret = file_get_contents("http://www.cse.iitb.ac.in/~prateekchandan/ldap.php?user=".$ldap_id."&pass=".Input::get('password'));
+			} catch (Exception $e) {
+				$message_arr = array('message' => 'Error Connecting Ldap Script');
+		    	return View::make('pages.login', $message_arr);
+			}
+			
+			if($ret == "Auth"||$ret=="Id" || $ret=="Pass" || $ret=="Connect"){
+				$message_arr = array('message' => 'Invalid username or password!');
+		    	return View::make('pages.login', $message_arr);
+			}
+			try {
+				$ret = json_decode($ret,true);
+			} catch (Exception $e) {
+				$message_arr = array('message' => 'Invalid username or password!');
+		    	return View::make('pages.login', $message_arr);
+			}
+			// Allowing only instructor and prateekchandan
+			if($ret["employeetype"]["0"] !=="fac" && $ldap_id!="prateekchandan"){
+				$message_arr = array('message' => 'Only instructor can log in');
+		    	return View::make('pages.login', $message_arr);
+			}
+			$email = Input::get('email');
+			$user = User::where('email' , '=' , Input::get('email'))->first();
+
+			if(is_null($user)){
+				$user = new USER;
+				$user->email = $email;
+				$user->password = Hash::make(Input::get('password'));
+				$user->name = $ret["cn"]["0"];
+				$user->save();
+			}
+			Auth::login($user);
+			return Redirect::to('/');
 		}
 	}
 
@@ -95,22 +120,24 @@ class HomeController extends BaseController {
 		}
 
 		// Keep the file with random name in cache
-		$destinationPath = storage_path().'/cache';
+		$destinationPath = storage_path().'/quizzes';
 		$fileName = md5(uniqid()).'.md';
 		Input::file('file')->move($destinationPath, $fileName);
 		
 
 		$lines = array();
-		foreach(file($destinationPath.'/'.$fileName) as $line) {
+		$file = file($destinationPath.'/'.$fileName);
+		foreach($file as $line) {
+			$line = explode("#", $line)[0];
 		    if(trim($line)!="")
 		    	array_push($lines,trim($line));
 		}
-		// Delete the file
-		unlink($destinationPath.'/'.$fileName);
+
 		$lenfile = sizeof($lines);
 		// parsing Quiz
 		{
-			if($lenfile<7){
+			if($lenfile<9){
+				unlink($destinationPath.'/'.$fileName);
 				$messageBag->add('message', 'The markup is Invalid');
 				return Redirect::back()->with('error',$messageBag) ;
 			}
@@ -120,6 +147,7 @@ class HomeController extends BaseController {
 			
 			if($lines[1]!="'''")
 			{
+				unlink($destinationPath.'/'.$fileName);
 				$messageBag->add('message', 'Quiz Description not provided');
 				return Redirect::back()->with('error',$messageBag) ;
 			}
@@ -127,11 +155,12 @@ class HomeController extends BaseController {
 			$i = 2;
 			while($i<$lenfile && $lines[$i++]!="'''"){
 				if($desc!="")
-					$desc.="\r\n";
+					$desc.="\n";
 				$desc .= $lines[$i-1];
 			}
 
 			if($i==$lenfile){
+				unlink($destinationPath.'/'.$fileName);
 				$messageBag->add('message', 'Quiz Description not provided in format');
 				return Redirect::back()->with('error',$messageBag) ;
 			}
@@ -142,55 +171,70 @@ class HomeController extends BaseController {
 			$quiz->description = $desc;
 			
 			if($i==$lenfile){
+				unlink($destinationPath.'/'.$fileName);
 				$messageBag->add('message', 'Tell if quiz is authenticated');
 				return Redirect::back()->with('error',$messageBag) ;
 			}
-			$temp = explode(":",$lines[$i++]);
-			if(sizeof($temp)<2){
-				$messageBag->add('message', 'Tell if quiz is authenticated');
-				return Redirect::back()->with('error',$messageBag) ;
-			}
-			if(trim($temp[1])=="yes")
+
+			$temp = $lines[$i++];
+			if(trim($temp)=="yes")
 				$quiz->skip_auth=0;
 			else
 				$quiz->skip_auth=1;
 
 			if($i==$lenfile){
+				unlink($destinationPath.'/'.$fileName);
 				$messageBag->add('message', 'Tell if marks display is required');
 				return Redirect::back()->with('error',$messageBag) ;
 			}
-			$temp = explode(":",$lines[$i++]);
-			if(sizeof($temp)<2){
-				$messageBag->add('message', 'Tell if marks display is required');
-				return Redirect::back()->with('error',$messageBag) ;
-			}
-			if(trim($temp[1])=="yes")
+			$temp = $lines[$i++];
+			if(trim($temp)=="yes")
 				$quiz->show_marks=1;
 			else
 				$quiz->show_marks=0;
 
 			if($i==$lenfile){
+				unlink($destinationPath.'/'.$fileName);
 				$messageBag->add('message', 'Tell if answer display is required');
 				return Redirect::back()->with('error',$messageBag) ;
 			}
-			$temp = explode(":",$lines[$i++]);
-			if(sizeof($temp)<2){
-				$messageBag->add('message', 'Tell if answer display is required');
-				return Redirect::back()->with('error',$messageBag) ;
-			}
-			if(trim($temp[1])=="yes")
+			$temp = $lines[$i++];
+			if(trim($temp)=="yes")
 				$quiz->show_answers=1;
 			else
 				$quiz->show_answers=0;
+
+			if($i==$lenfile){
+				unlink($destinationPath.'/'.$fileName);
+				$messageBag->add('message', 'Tell if randomizing questions is required');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			$temp = $lines[$i++];
+			if(trim($temp)=="yes")
+				$quiz->randomize_questions=1;
+			else
+				$quiz->randomize_questions=0;
+
+			if($i==$lenfile){
+				unlink($destinationPath.'/'.$fileName);
+				$messageBag->add('message', 'Tell if randomizing options is required');
+				return Redirect::back()->with('error',$messageBag) ;
+			}
+			$temp = $lines[$i++];
+			if(trim($temp)=="yes")
+				$quiz->randomize_options=1;
+			else
+				$quiz->randomize_options=0;
 
 			$quiz->keyset = Passcode::genCode();
 			$quiz->key = json_encode(Passcode::genPass($quiz->keyset));
 			$quiz->keyset = json_encode($quiz->keyset);
 			$quiz->instructor = Auth::user()->id;
+			$quiz->downloadable_path = $destinationPath.'/'.$fileName;
 			$quiz->save();
 		}
 
-		
+
 		while($i < $lenfile && !(strpos($lines[$i++],"**********") !==false));
 
 		while($i < $lenfile)
@@ -218,7 +262,11 @@ class HomeController extends BaseController {
 				if($ques[$j++]!="'''") break;
 
 				$q->question = "";
-				while($j<$len && $ques[$j++]!="'''") $q->question.=$ques[$j-1];	
+				while($j<$len && $ques[$j++]!="'''") {
+					if($q->question != "")
+						$q->question .= "\n";
+					$q->question.=$ques[$j-1];	
+				}
 				
 
 				$q->type = intval($ques[$j++]);
@@ -264,6 +312,7 @@ class HomeController extends BaseController {
 
 			}
 			$i++;
+
 		}
 		
 		return Redirect::to('/quiz/'.$quiz->course_code.":".$quiz->id);
@@ -284,7 +333,7 @@ class HomeController extends BaseController {
 
 		if(Auth::user()->id != $quiz->instructor)
 			return Redirect::Route('home');
-
+		unlink($quiz->downloadable_path);
 		$quiz->delete();
 		return Redirect::Route('home');
 	}	
@@ -362,21 +411,20 @@ class HomeController extends BaseController {
 		return View::make('pages.quiz');
 	}
 
-	public function show_quiz_summary($id)
+	public function get_quiz_summary($id)
 	{
-
 		$couseid =  explode(":", $id);
-		if(sizeof($couseid)!=2) return App::abort(404);
+		if(sizeof($couseid)!=2) return false;
 		
 		// Assume that $id is of form coursecode-quizid 
 		$quiz = Quiz::find($couseid[1]);
-		if(is_null($quiz)) return App::abort(404);
+		if(is_null($quiz)) return false;
 
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
-			return App::abort(404);
+			return false;
 
 		if(Auth::user()->id != $quiz->instructor)
-			return App::abort(404);
+			return false;
 
 		$qtemp = Question::where('quiz','=',$quiz->id)->get();
 		$questionsmap = array();
@@ -411,7 +459,110 @@ class HomeController extends BaseController {
 			return $b->student_roll < $a->student_roll;
 		}
 		usort($results,'cmp');
+		return $results;
+	}
+	public function show_quiz_summary($id)
+	{
+
+		$results = $this->get_quiz_summary($id);
+
+		if($results === false){
+			App::abort(404);
+		}
+		$couseid =  explode(":", $id);		
+		$quiz = Quiz::find($couseid[1]);
+		View::Share('quiz',$quiz);
 		View::Share('results',$results);
 		return View::make('pages.result');
 	}
+
+	public function download_quiz_summary($id)
+	{
+		$results = $this->get_quiz_summary($id);
+		if($results === false){
+			App::abort(404);
+		}
+		$couseid =  explode(":", $id);		
+		$quiz = Quiz::find($couseid[1]);
+
+		$str = "Roll\tName\tSubmission_no\tquestion_id\tresult\tgiven_ans\tcorrect_ans\tmarks_obtained\ttype\n";
+		foreach ($results as $result) {
+			foreach ($result->results as $no => $submission) {
+				foreach($submission->responses as $key => $ques){
+					$str.=$result->student_roll."\t";				
+					$str.=$result->student_name."\t";				
+					$str.=($no+1)."\t";				
+					$str.=$ques->id."\t";				
+					$str.=$ques->result."\t";
+					foreach ($ques->given_answer as $chk => $ans) {
+						if($chk>0)
+							$str.=",";
+						$str.=$ans;
+					}				
+					$str.="\t";
+					foreach ($ques->correct_answer as $chk => $ans) {
+						if($chk>0)
+							$str.=",";
+						$str.=$ans;
+					}				
+					$str.="\t";
+					$str.=$ques->marks_obtained."\t";
+					$str.=$ques->type."\t";
+					$str.="\n";
+				}
+			}
+		}
+		
+		$response = Response::make($str, 200);
+		$response->header('content-type' , 'application/csv');
+		$response->header('content-disposition' , 'inline; filename="'.$quiz->course_code."_".$quiz->id.'_submissions.csv"');
+		return $response;
+	}
+
+	public function download_quiz_summary_log($id)
+	{
+		$results = $this->get_quiz_summary($id);
+		if($results === false){
+			App::abort(404);
+		}
+		$couseid =  explode(":", $id);		
+		$quiz = Quiz::find($couseid[1]);
+
+		$str="Roll Number\tName of Student\tLog Message\tTime\n";
+		foreach ($results as $result) {
+			foreach ($result->logs as $no => $msg) {
+				$str.=$result->student_roll."\t";
+				$str.=$result->student_name."\t";
+				$str.=$msg->message."\t";
+				$str.=$msg->updated_at."\t";
+				$str.="\n";
+			}
+		}
+		$response = Response::make($str, 200);
+		$response->header('content-type' , 'application/csv');
+		$response->header('content-disposition' , 'inline; filename="'.$quiz->course_code."_".$quiz->id.'_logs.csv"');
+		return $response;
+	}
+
+	public function download_quiz($id)
+	{
+		$couseid =  explode(":", $id);
+		if(sizeof($couseid)!=2) return App::abort(404);
+		
+		// Assume that $id is of form coursecode-quizid 
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return App::abort(404);
+
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0])) 
+			return App::abort(404);
+
+		if(Auth::user()->id != $quiz->instructor)
+			return App::abort(404);
+
+		$response = Response::make(file_get_contents($quiz->downloadable_path), 200);
+		$response->header('content-type' , 'application/octet-stream');
+		$response->header('content-disposition' , 'inline; filename="'.$quiz->course_code."_".$quiz->id.'.md"');
+		return $response;
+	}
 }
+
