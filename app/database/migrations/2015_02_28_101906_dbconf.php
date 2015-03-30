@@ -14,11 +14,11 @@ class Dbconf extends Migration {
 	{
 		Schema::dropIfExists('Env');
 		Schema::dropIfExists('Response');
+		Schema::dropIfExists('Logs');
 		Schema::dropIfExists('KeyStates');
 		Schema::dropIfExists('Questions');
 		Schema::dropIfExists('Quiz');
 		Schema::dropIfExists('Instructor');
-		Schema::dropIfExists('Logs');
 
 		Schema::create('Instructor', function(Blueprint $table)
 		{
@@ -42,6 +42,9 @@ class Dbconf extends Migration {
 			$table->integer('skip_auth')->default(0);
 			$table->integer('show_answers')->default(0);
 			$table->integer('show_marks')->default(1);
+			$table->integer('randomize_questions')->default(0);
+			$table->integer('randomize_options')->default(1);
+			$table->string('downloadable_path',500)->nullable();
 			$table->timestamps();
 		});
 		Schema::create('KeyStates', function(Blueprint $table)
