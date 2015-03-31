@@ -155,7 +155,7 @@ class HomeController extends BaseController {
 			$i = 2;
 			while($i<$lenfile && $lines[$i++]!="'''"){
 				if($desc!="")
-					$desc.="\n";
+					$desc.='\n';
 				$desc .= $lines[$i-1];
 			}
 
@@ -264,7 +264,7 @@ class HomeController extends BaseController {
 				$q->question = "";
 				while($j<$len && $ques[$j++]!="'''") {
 					if($q->question != "")
-						$q->question .= "\n";
+						$q->question .= '\n';
 					$q->question.=$ques[$j-1];	
 				}
 				
