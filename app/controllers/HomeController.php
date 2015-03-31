@@ -49,6 +49,8 @@ class HomeController extends BaseController {
 		if(is_null($quiz)) return App::abort(404);
 		if(strtoupper($quiz->course_code) != strtoupper($couseid[0]))
 		return App::abort(404);
+		$codes = json_decode($quiz->keyset);
+		Passcode::printcode($codes);
 		$codes = json_decode($quiz->key);
 		Passcode::printcode($codes);
 	}
