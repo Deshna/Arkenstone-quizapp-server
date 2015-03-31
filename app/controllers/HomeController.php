@@ -52,7 +52,10 @@ class HomeController extends BaseController {
 		//$codes = json_decode($quiz->keyset);
 		//Passcode::printcode($codes);
 		$codes = json_decode($quiz->key);
+		echo '<div style="font-size:3em"><b>PassCode -</b>';
 		Passcode::printcode($codes);
+		echo '<br><b>Quiz Code - "'.$quiz->course_code.":".$quiz->id.'"</b>';
+		echo '</div>';
 	}
 
 	public function show_login()

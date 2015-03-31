@@ -325,7 +325,7 @@ class APIController extends BaseController {
 		else{
 			$log = new Logs;
 			$log->add(Input::get('uniq_id'),'Submitted Response after '.($keystate->submitted-1)." previous submissions",$quiz->id);	
-			$ret['message'] = "Warning : The quiz is previously submitted ".($keystate->submitted-1)." times. This event is logged to instructor";
+			$ret['message'] = "Successfully submitted response. Warning : The quiz is previously submitted ".($keystate->submitted-1)." times. This event is logged to instructor";
 		}
 		$ret['logs'] = $Errlog;
 		$ret['show_result'] = (int)($quiz->show_answers || $quiz->show_marks);
