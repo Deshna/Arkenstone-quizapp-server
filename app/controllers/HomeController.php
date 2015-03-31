@@ -97,7 +97,7 @@ class HomeController extends BaseController {
 			$ldap_id = $ldap_id[0];
 			$check = 0;
 			try {
-				$ret = file_get_contents("http://www.cse.iitb.ac.in/~prateekchandan/ldap.php?user=".$ldap_id."&pass=".Input::get('password'));
+				$ret = file_get_contents("http://bodhitree3.cse.iitb.ac.in:8080/ldap.php?user=".$ldap_id."&pass=".Input::get('password'));
 			} catch (Exception $e) {
 				$message_arr = array('message' => 'Error Connecting Ldap Script');
 		    	return View::make('pages.login', $message_arr);

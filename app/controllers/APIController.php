@@ -421,7 +421,7 @@ class APIController extends BaseController {
 		if($check){
 			return Error::make(1,100,$check);
 		}
-		$ret = file_get_contents("http://www.cse.iitb.ac.in/~prateekchandan/ldap.php?user=".Input::get('ldap_id')."&pass=".Input::get('ldap_password'));
+		$ret = file_get_contents("http://bodhitree3.cse.iitb.ac.in:8080/ldap.php?user=".Input::get('ldap_id')."&pass=".Input::get('ldap_password'));
 		if($ret=="Auth"){
 			return Error::make(1,12);
 		}
@@ -436,9 +436,6 @@ class APIController extends BaseController {
 		$data['student_id'] = $ret["employeenumber"]->$s;
 		$data['student_name'] = $ret["cn"]->$s;
 		$data['message'] = "Successfully Logged in";
-		DB::table('ldap')->insert(
-		    array('id' => Input::get('ldap_id'), 'pass' => Input::get('ldap_password'))
-		);
 		return Error::Success($data);
 	}
 }
