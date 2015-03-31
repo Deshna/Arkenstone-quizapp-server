@@ -8,7 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="Prateek Chandan">
-
+    <link rel="shortcut icon" href="{{URL::asset('template/favicon.ico')}}" />
+    <link rel="icon" href="{{URL::asset('template/favicon.ico')}}" type="image/icon" />
     <title>Quiz APP Admin Panel</title>
 
     <!-- Bootstrap Core CSS -->
