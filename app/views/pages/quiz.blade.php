@@ -1,6 +1,11 @@
 @extends('pages.layout')
 
 @section('content')
+            <style type="text/css">
+                .no-a:hover{
+                    text-decoration: none;
+                }
+            </style>
 			<div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header">Quiz Code : "{{$quiz->course_code}}:{{$quiz->id}}"</h1>
@@ -11,9 +16,9 @@
                 @if($quiz->skip_auth==0)
                 <div class="col-lg-12">
                     <h2>Passcode:</h2>
-                    <div class="col-md-12">
+                    <a class="col-md-12 no-a" href="{{URL::to('/passcode')}}/{{$quiz->course_code}}:{{$quiz->id}}">
                         {{Passcode::printcode(json_decode($quiz->key))}}
-                    </div>
+                    </a>
                 </div>
                 @endif
                 <div class="col-md-12">
