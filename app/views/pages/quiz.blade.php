@@ -8,12 +8,14 @@
                 <!-- /.col-lg-12 -->
             </div>
 			<div class="row">
+                @if($quiz->skip_auth==0)
                 <div class="col-lg-12">
                     <h2>Passcode:</h2>
                     <div class="col-md-12">
                         {{Passcode::printcode(json_decode($quiz->key))}}
                     </div>
                 </div>
+                @endif
                 <div class="col-md-12">
                     <br>
                     <a class="btn btn-danger" href="{{URL::to('/delete-quiz')}}/{{$quiz->course_code}}:{{$quiz->id}}" onclick="return confirm('Are you sure want to delete this Quiz?');">Delete this Quiz</a>
