@@ -67,7 +67,7 @@
                                             <div class="col-md-12">
                                                 @foreach($question->options as $option)
                                                 <div class="col-md-6">
-                                                    <div class="radio">
+                                                    <div class="radio {{($option->ans==1)?'text-success':''}}">
                                                         <label>
                                                             <input type="{{($question->type ==1)?'radio':'checkbox'}}" disabled="disabled" id="optionsRadios1" value="option1" {{($option->ans==1)?"checked":""}}>{{$option->text}}
                                                         </label>
