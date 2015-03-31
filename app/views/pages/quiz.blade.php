@@ -33,7 +33,11 @@
                         </div>
                         <div class="panel-body">
                             <p>{{str_replace('\n', '<br>', $quiz->description)}}</p>
-                            <p><strong>Duration : {{$quiz->time}} seconds</strong></p>
+                            <div><strong>Duration : {{$quiz->time}} seconds</strong></div>
+                            <div><strong>Randomize Question : {{($quiz->randomize_questions == 1)?"yes":"no"}}</strong></div>
+                            <div><strong>Randomize Options : {{($quiz->randomize_options == 1)?"yes":"no"}}</strong></div>
+                            <div><strong>Show Marks at end : {{($quiz->show_marks == 1)?"yes":"no"}}</strong></div>
+                            <div><strong>Show Answers at End : {{($quiz->show_answers == 1)?"yes":"no"}}</strong></div>
                         </div>
                     </div>
                 </div>
