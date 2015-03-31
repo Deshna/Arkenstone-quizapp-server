@@ -201,6 +201,8 @@ class APIController extends BaseController {
 		$send['quiz_description'] = $quiz->description;
 		$send['quiz_duration'] = intval($quiz->time);
 		$send['questions'] = $questions;
+		$send['randomize_questions'] = intval($quiz->randomize_questions);
+		$send['randomize_options'] = intval($quiz->randomize_options);
 		if($keystate->submitted >=1){
 			$log = new Logs;
 			$log->add(Input::get('uniq_id'),'Quiz demanded after previous '.($keystate->question_get-1)." demands and ".$keystate->submitted." submissions",$quiz->id);

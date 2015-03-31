@@ -65,6 +65,7 @@ class Passcode{
 			else
 				$i--;
 		}
+		shuffle($codeArray);
 		return $codeArray;
 	}
 
