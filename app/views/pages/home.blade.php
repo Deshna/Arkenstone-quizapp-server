@@ -26,7 +26,7 @@
                                     <div id="{{$quiz->course_code}}-{{$quiz->id}}" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
                                         <div class="panel-body">
                                         	<div class="col-md-12">
-                                            	{{$quiz->description}}
+                                            	{{str_replace('\n', '<br>', $quiz->description)}}
                                             </div>
                                             <div class="col-md-12">
                                             	<br>
