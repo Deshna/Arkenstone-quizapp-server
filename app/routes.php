@@ -49,6 +49,7 @@ Route::group(array('before'=>'user'),function(){
 	Route::any('/summary/{id}/logs',array('uses' => 'HomeController@download_quiz_summary_log'));
 	Route::get('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@show_add_new'));
 	Route::post('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@add_new'));
+	Route::get('/passcode/{id}','HomeController@show_passcode');
 });
 
 App::missing(function($exception)

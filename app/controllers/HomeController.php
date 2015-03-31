@@ -39,6 +39,20 @@ class HomeController extends BaseController {
 		Passcode::printcode($pass);
 	}
 
+	// Show passcode for a quiz
+	public function show_passcode($id)
+	{
+		$couseid = explode(":", $id);
+		if(sizeof($couseid)!=2) return App::abort(404);
+		// Assume that $id is of form coursecode-quizid
+		$quiz = Quiz::find($couseid[1]);
+		if(is_null($quiz)) return App::abort(404);
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0]))
+		return App::abort(404);
+		$codes = json_decode($quiz->key);
+		Passcode::printcode($codes);
+	}
+
 	public function show_login()
 	{
 		return View::make('pages.login');
