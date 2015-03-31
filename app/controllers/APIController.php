@@ -144,7 +144,7 @@ class APIController extends BaseController {
 		$original = json_decode($quiz->key);
 		
 		for($i = 0 ; $i <8 ; $i++ ){
-			if($passcode[$i] != $original[$i])
+			if(strtoupper($passcode[$i]) != strtoupper($original[$i]))
 				return Error::make(1,5);
 		}
 
