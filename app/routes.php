@@ -11,7 +11,7 @@
 |
 */
 
-
+// URL's which are used for API's
 Route::group(array('before'=>'API' ,'after'=>'afterAPI','prefix' => 'api') ,function (){
 	Route::any('/quiz','APIController@quizInit');
 	Route::any('/quiz/Auth','APIController@quizAuth');
