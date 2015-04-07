@@ -5,11 +5,15 @@
 */
 
 /**
-* The APIController Class contains all the methods which are required for handling thr API
+* The APIController Class contains all the methods which are required for handling the API
 */
 
 class APIController extends BaseController {
 
+	/*
+	*	This function takes in two object , one final answer and other correct answer
+	* 	This returns the marks obtained for this answer.
+	*/
 	private static function evaluate($tocheck , $final)
 	{
 		
