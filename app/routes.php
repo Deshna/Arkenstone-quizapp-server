@@ -50,6 +50,7 @@ Route::group(array('before'=>'user'),function(){
 	Route::get('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@show_add_new'));
 	Route::post('/add-new',array('as'=>'add-new' ,'uses' => 'HomeController@add_new'));
 	Route::get('/passcode/{id}','HomeController@show_passcode');
+	Route::get('/refresh-passcode/{id}','HomeController@refresh_passcode');
 	Route::get('/passcode1/{id}','HomeController@show_passcode1');
 });
 

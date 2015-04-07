@@ -2,8 +2,12 @@
 
 class Passcode{
 	public static $ranges=
-	array([33,126],[57344,57691]);
+	array([33,126],[57344,57401],[57403,57411],[57430,57445],[57465,57548],[57602,57691]);
 
+	public static $excludes=
+	array(0xe059,0xe05b,0xe05c,0xe05e,0xe060,0xe081,0xe084,0xe086,0xe087,
+		0xe08a,0xe08c,0xe091,0xe093,0xe0b4,0xe0b5,0xe0b8,0xe10a,0xe112,0xe114,0xe116,0xe118
+		,0xe11a,0xe11c,0xe11f,);
 	/*array(
 		[386,443],[564,687],[976,1051],[1062,1081],[1121,1154],
 		[1162,1228],[1283,1319],[1330,1336],[1377,1415],[1488,1514],
@@ -59,7 +63,7 @@ class Passcode{
 			$b = rand(self::$ranges[$a][0],self::$ranges[$a][1]);
 			$c = strtoupper(dechex($b));
 			while(strlen($c)<4) $c = '0'.$c;
-			if(!in_array($c, $codeArray)){
+			if(!in_array($c, $codeArray)&&!in_array($b, self::$excludes)){
 				$codeArray[$i]=$c;
 			}
 			else

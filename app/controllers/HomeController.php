@@ -57,6 +57,23 @@ class HomeController extends BaseController {
 		echo '<br><b>Quiz Code - "'.$quiz->course_code.":".$quiz->id.'"</b>';
 		echo '</div>';
 	}
+	// Refresh passcode for a quiz
+	public function refresh_passcode($id)
+	{
+		$couseid = explode(":", $id);
+		if(sizeof($couseid)!=2) return App::abort(404);
+		// Assume that $id is of form coursecode-quizid
+		$quiz = Quiz::where('instructor','=',Auth::user()->id)->find($couseid[1]);
+		if(is_null($quiz)) return App::abort(404);
+		if(strtoupper($quiz->course_code) != strtoupper($couseid[0]))
+		return App::abort(404);
+
+		$quiz->keyset = Passcode::genCode();
+		$quiz->key = json_encode(Passcode::genPass($quiz->keyset));
+		$quiz->keyset = json_encode($quiz->keyset);
+		$quiz->save();
+		return Redirect::to('quiz/'.$id);
+	}
 	public function show_passcode1($id)
 	{
 		$couseid = explode(":", $id);
