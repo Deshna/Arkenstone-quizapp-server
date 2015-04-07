@@ -97,7 +97,7 @@ class Passcode{
 			<style>
 				@font-face{
 					font-family: arkenstone;
-    				src: url('.URL::asset('template/dist/fonts/arkenstone-symbol-font-v1.ttf').');
+    				src: url('.URL::asset('template/dist/fonts/arkenstone-symbol-font-v1.1.ttf').');
 				}
 			</style>
 		';
