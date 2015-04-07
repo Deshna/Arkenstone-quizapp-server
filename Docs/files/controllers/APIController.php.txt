@@ -1,4 +1,12 @@
 <?php
+/**
+* This file APIController.php contains the APIController Class and all its methods
+* by <a href="http://prateekchandan.me">Prateek Chandan</a>
+*/
+
+/**
+* The APIController Class contains all the methods which are required for handling thr API
+*/
 
 class APIController extends BaseController {
 
