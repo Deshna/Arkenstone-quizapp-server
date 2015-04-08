@@ -1,11 +1,12 @@
 <?php
 /**
-* This file APIController.php contains the APIController Class and all its methods
-* by <a href="http://prateekchandan.me">Prateek Chandan</a>
+*	This file APIController.php contains the APIController Class and all its methods
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
 */
 
 /**
-* The APIController Class contains all the methods which are required for handling the API
+*	The APIController Class contains all the methods which are required for handling the API.
+*	This handles all the reuests used in API's and returns JSON responses with proper return Parameters
 */
 
 class APIController extends BaseController {
@@ -13,6 +14,7 @@ class APIController extends BaseController {
 	/*
 	*	This function takes in two object , one final answer and other correct answer
 	* 	This returns the marks obtained for this answer.
+	*	
 	*/
 	private static function evaluate($tocheck , $final)
 	{
@@ -58,7 +60,8 @@ class APIController extends BaseController {
 					return $final->marks;
 				break;
 			case '5' : // fill in the blanks
-				if(in_array((string)$user_answer[0],$correct_answer))
+				//! Trim function ignores all trailing spaces at the end
+				if(in_array(trim((string)$user_answer[0]),$correct_answer))
 					return $final->marks;
 				break;
 			default:
@@ -68,6 +71,14 @@ class APIController extends BaseController {
 		return 0;
 	}
 
+	/*
+	*	This function takes in student_id , quiz_id and student_name in the GET parameter
+	* 	and checks if user is already initiated for the quiz , if no it assigns him a uniq id
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function quizInit()
 	{	
 		$requirements=['student_id','quiz_id','student_name'];
@@ -102,6 +113,10 @@ class APIController extends BaseController {
 			$keystate->symbol_verify = intval($quiz->skip_auth);
 			$keystate->quiz = $quiz->id;
 			$keystate->id = uniqid();
+			/** This loop is to ensure that a unique ID is only pushed to the database*/
+			while(!is_null(KeyState::find($keystate->id))){
+				$keystate->id = uniqid();
+			}
 			$keystate->save();
 			$keystate = KeyState::where('student_roll' , '=' , Input::get('student_id'))
 					->where('quiz' , '=' , $quiz->id)
@@ -119,7 +134,14 @@ class APIController extends BaseController {
 		return Error::success($ret);
 		
 	}
-
+	/*
+	*	This function takes in input the uniq_id , passcode and quiz_id in get parameters and 
+	* 	does the password authentication thing for the quiz
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function QuizAuth()
 	{
 		$requirements=['uniq_id','passcode','quiz_id'];
@@ -167,6 +189,14 @@ class APIController extends BaseController {
 		return Error::success(array("message"=>"success"));
 	}
 
+	/*
+	*	This function takes in input the uniq_id and quiz_id in get parameters and 
+	* 	returns the quiz details and questions in the responses
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function QuizGet()
 	{
 		$requirements=['uniq_id','quiz_id'];
@@ -232,7 +262,14 @@ class APIController extends BaseController {
 		return Error::success($send);
 	}
 
-	// Submitting the QUiz
+	/*
+	*	This function takes in input the uniq_id  and quiz_id in get parameters and 
+	* 	json of answers in the body of request. This uses evaluates function and stores the marks and resposes of user in the database
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function QuizSubmit()
 	{
 		$requirements=['uniq_id','quiz_id'];
@@ -245,7 +282,7 @@ class APIController extends BaseController {
 		$couseid =  explode(":", $id);
 		if(sizeof($couseid)!=2) return Error::make(1,9);
 		
-		// Assume that $id is of form coursecode-quizid 
+		// Assume that $id is of form coursecode:quizid 
 		$quiz = Quiz::find($couseid[1]);
 		if(is_null($quiz)) return Error::make(1,9);
 
@@ -268,7 +305,7 @@ class APIController extends BaseController {
 		}
 
 		$request = Request::instance();
-
+		// Get content of body
 		$content = $request->getContent();
 
 		$newcontent =  json_decode($content);
@@ -347,7 +384,14 @@ class APIController extends BaseController {
 	}
 
 
-	// Sends back the Quiz Summary
+	/*
+	*	This function takes in input the uniq_id and quiz_id in get parameters and 
+	* 	returns the summary of the quiz
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function QuizSummary()
 	{
 		$requirements=['uniq_id','quiz_id'];
@@ -394,6 +438,14 @@ class APIController extends BaseController {
 		return Error::success($response);
 	}
 	
+	/*
+	*	This function takes in input the uniq_id , message and quiz_id in get parameters and 
+	* 	adds the log message in the database
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function addLog()
 	{
 		$requirements=['uniq_id','quiz_id','message'];
@@ -427,6 +479,16 @@ class APIController extends BaseController {
 
 	}
 
+	/*
+	*	This function takes in input the ldap_id and ldap_password in get parameters and 
+	* 	it connects the ldap script to authenticate user.
+	*	After authentication , if the user is in database it logs him in else create a new user and
+	* 	then logs him in
+	*
+	*	@uses BaseController::check_requirements to see if all inputs are present or not
+	*	
+	*	@return Response object containing JSON of respose
+	*/
 	public function ldap_auth(){
 		$requirements=['ldap_id','ldap_password'];
 		$check  = self::check_requirements($requirements);
@@ -451,3 +513,4 @@ class APIController extends BaseController {
 		return Error::Success($data);
 	}
 }
+// END OF FILE
