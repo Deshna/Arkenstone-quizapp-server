@@ -105,9 +105,9 @@ class Passcode{
 				}
 			</style>
 		';
-		echo '<div style="font-family:arkenstone;background:#555;text-align:center;padding:50px">';
+		echo '<div style="font-family:arkenstone;background:#333;text-align:center;padding:50px">';
 		for ($i=0; $i < sizeof($codeArray); $i++) {
-			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#111;color:#eee;padding:10px">&#'.hexdec($codeArray[$i]).'</span>';
+			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#FFF;color:#333;padding:10px">&#'.hexdec($codeArray[$i]).'</span>';
 		}
 		echo '</div>';	
 		/*$s = self::toString($codeArray);
