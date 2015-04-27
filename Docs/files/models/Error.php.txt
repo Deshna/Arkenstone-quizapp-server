@@ -1,6 +1,17 @@
 <?php
+/**
+*	This file Error.php contains the Error Class and all its methods
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
+
+/**
+*	The Error Class is a custon Class which helps to return multiple errors in the JSON , you can modify the strings here to change the error messages
+*/
 class Error{
 
+	/**
+	*	@var $error_messages contains the mapping of error codes to error
+	*/
 	private static $error_messages =  array(
 		#error code to error message mapping
 		'-1'	=> "",
@@ -23,7 +34,10 @@ class Error{
 		'12'	=> "Invalid Ldap ID / Password"
 		);
 
-	// Error type
+	/*
+	*	This function makes a new error response with appropriate messages and payload and the error variable
+	*	
+	*/
 	public static function make($type=0 , $code = 0 , $field="")
 	{
 		$message=self::$error_messages[$code];
@@ -43,6 +57,10 @@ class Error{
 		return $response;
 	}
 
+	/*
+	*	This function is used to pass a json data in the API Response which is a successful request
+	*	
+	*/
 	public static function success($data= array())
 	{
 		$status = 200;

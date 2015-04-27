@@ -1,10 +1,16 @@
 <?php
-
+/**
+*	This file User.php contains the User Class which is the ORM for table 'Instructor' and Also Implements the USer interface
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableTrait;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
+/**
+* The User Class is the ORM for table 'Instructor'. It implements UserInterface which is used for Authentication
+*/
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	use UserTrait, RemindableTrait;

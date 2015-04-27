@@ -1,6 +1,12 @@
 <?php
+/**
+*	This file Logs.php contains the Logs Class which is the ORM for table 'Logs'
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
 
-
+/**
+* The Logs Class is the ORM for table 'Logs'
+*/
 class Logs extends Eloquent {
 
 

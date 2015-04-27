@@ -1,8 +1,15 @@
 <?php
-
+/**
+*	This file is a database migration file
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+/**
+*	The DbConf Class contains structure of complete database
+* 	TO install the database one can simply call "php artisan migrate --force"
+*/
 class Dbconf extends Migration {
 
 	/**

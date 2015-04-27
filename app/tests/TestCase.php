@@ -1,5 +1,8 @@
 <?php
 
+/**
+* The Testcase Class is not used in project but can be used to implement a testcase
+*/
 class TestCase extends Illuminate\Foundation\Testing\TestCase {
 
 	/**

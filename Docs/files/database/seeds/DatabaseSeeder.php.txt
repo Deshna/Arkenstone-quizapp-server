@@ -1,5 +1,12 @@
 <?php
+/**
+*	This file is a used to seed database with initial values
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
 
+/**
+*	The DatabaseSeeder Class is not used in project , but can be used to seed database with some initial values
+*/
 class DatabaseSeeder extends Seeder {
 
 	/**

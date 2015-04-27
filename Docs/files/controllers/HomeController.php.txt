@@ -1,20 +1,19 @@
 <?php
+/**
+*	This file HomeController.php contains the HomeController Class and all its methods
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
+
 use Illuminate\Support\MessageBag;
+/**
+*	The HomeController Class contains all the methods which are required the purpose of the Web Interface of the Portal.
+*	It has the mapping functions of all the URLs with their post and get Request
+*/
 class HomeController extends BaseController {
 
 	/*
-	|--------------------------------------------------------------------------
-	| Default Home Controller
-	|--------------------------------------------------------------------------
-	|
-	| You may wish to use controllers instead of, or in addition to, Closure
-	| based routes. That's great! Here is an example controller method to
-	| get you started. To route to this controller, just add the route:
-	|
-	|	Route::get('/', 'HomeController@showWelcome');
-	|
+	*	This function creates the View of the Homepage
 	*/
-
 	public function showWelcome()
 	{
 		echo '
@@ -23,6 +22,9 @@ class HomeController extends BaseController {
 		';
 	}
 
+	/*
+	*	This function displays the dashboard for a user
+	*/
 	public function show_home()
 	{
 		$quiz = Quiz::where('instructor','=',Auth::user()->id)->get();
@@ -30,6 +32,9 @@ class HomeController extends BaseController {
 		return View::make('pages.home');
 	}
 
+	/*
+	*	This function is used to generate the Passcode and Print it
+	*/
 	// generate passcode
 	public function passcode()
 	{
@@ -39,6 +44,9 @@ class HomeController extends BaseController {
 		Passcode::printcode($pass);
 	}
 
+	/*
+	*	This function takes input of a quiz_id and creates a page where the password and quiz id is displayed in Bold
+	*/
 	// Show passcode for a quiz
 	public function show_passcode($id)
 	{
@@ -57,6 +65,10 @@ class HomeController extends BaseController {
 		echo '<br><b>Quiz Code - "'.$quiz->course_code.":".$quiz->id.'"</b>';
 		echo '</div>';
 	}
+
+	/*
+	*	This function is used to generate a new passcode for a quiz 
+	*/
 	// Refresh passcode for a quiz
 	public function refresh_passcode($id)
 	{
@@ -74,6 +86,10 @@ class HomeController extends BaseController {
 		$quiz->save();
 		return Redirect::to('quiz/'.$id);
 	}
+
+	/*
+	*	This function is used to show all the keyset of passcode along with the original passcode
+	*/
 	public function show_passcode1($id)
 	{
 		$couseid = explode(":", $id);
@@ -91,11 +107,17 @@ class HomeController extends BaseController {
 		Passcode::printcode($codes);
 	}
 
+	/*
+	*	This function Displays the login page
+	*/
 	public function show_login()
 	{
 		return View::make('pages.login');
 	}
 
+	/*
+	*	This function checks if a user is authenticated or not. We use the ldap interface for this
+	*/
 	public function login()
 	{
 		$data = Input::all();
@@ -150,17 +172,26 @@ class HomeController extends BaseController {
 		}
 	}
 
+	/*
+	*	This function is used to logout
+	*/
 	public function logout()
 	{
 		Auth::logout();
 		return Redirect::Route('login');
 	}
 
+	/*
+	*	This function displays the page to add a new user
+	*/
 	public function show_add_new()
 	{
 		return View::make('pages.add_new');
 	}
 
+	/*
+	*	This function is used to handle the post request for adding the quiz, parse it and add into database
+	*/
 	// Function to add new Quiz
 	public function add_new()
 	{
@@ -370,6 +401,9 @@ class HomeController extends BaseController {
 		return Redirect::to('/quiz/'.$quiz->course_code.":".$quiz->id);
 	}
 
+	/*
+	*	This function is used to delete the quiz
+	*/
 	// Function to delete the Quiz
 	public function delete_quiz($id)
 	{
@@ -390,6 +424,9 @@ class HomeController extends BaseController {
 		return Redirect::Route('home');
 	}	
 
+	/*
+	*	This function is used to display the quiz details
+	*/
 	// Function to show a quiz
 	public function show_quiz($id)
 	{
@@ -463,6 +500,9 @@ class HomeController extends BaseController {
 		return View::make('pages.quiz');
 	}
 
+	/*
+	*	This function is helper function to the one which displays the quiz summary page
+	*/
 	public function get_quiz_summary($id)
 	{
 		$couseid =  explode(":", $id);
@@ -513,6 +553,10 @@ class HomeController extends BaseController {
 		usort($results,'cmp');
 		return $results;
 	}
+
+	/*
+	*	This function displays the quiz summary page
+	*/
 	public function show_quiz_summary($id)
 	{
 
@@ -528,6 +572,9 @@ class HomeController extends BaseController {
 		return View::make('pages.result');
 	}
 
+	/*
+	*	This function helps the user to download the quiz summary in csv
+	*/
 	public function download_quiz_summary($id)
 	{
 		$results = $this->get_quiz_summary($id);
@@ -571,6 +618,9 @@ class HomeController extends BaseController {
 		return $response;
 	}
 
+	/*
+	*	This function helps the user to download the quiz logs in csv
+	*/
 	public function download_quiz_summary_log($id)
 	{
 		$results = $this->get_quiz_summary($id);
@@ -596,6 +646,9 @@ class HomeController extends BaseController {
 		return $response;
 	}
 
+	/*
+	*	This function helps the user to download the quiz questions in  csv
+	*/
 	public function download_quiz($id)
 	{
 		$couseid =  explode(":", $id);

@@ -1,9 +1,22 @@
 <?php
+/**
+*	This file Passcode.php contains the Passcode Class which used to generate new keyets and Passcodes
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
 
+/**
+* The Passocde Class is used to generate new keyets and Passcodes
+*/
 class Passcode{
+	/**
+	*	@var $ranges : They contains an array of tuples with the start index of a valid mapping of Unicodes in the font file
+	*/
 	public static $ranges=
 	array([33,126],[57344,57401],[57403,57411],[57430,57445],[57465,57548],[57602,57691]);
 
+	/**
+	*	@var $excludes : They contains an array invalid unicodes from ranges
+	*/
 	public static $excludes=
 	array(0xe059,0xe05b,0xe05c,0xe05e,0xe060,0xe081,0xe084,0xe086,0xe087,
 		0xe08a,0xe08c,0xe091,0xe093,0xe0b4,0xe0b5,0xe0b8,0xe10a,0xe112,0xe114,0xe116,0xe118
@@ -53,7 +66,9 @@ class Passcode{
 		[60000,60500],[60501,61000],[61000,61443],[65020,65020]
 		);*/
 	
-	// Generates a random 16 unicodes from the bove valid codes
+	/**
+	*	This function Generates a random 16 unicodes from the bove valid codes
+	*/
 	public static function genCode(){
 		$codeArray = array();
 		$l = sizeof(self::$ranges);
@@ -73,6 +88,9 @@ class Passcode{
 		return $codeArray;
 	}
 
+	/**
+	*	This function Generates a passcode from a keyset
+	*/
 	public static function genPass($codeArray){
 		$ret = array();
 		$l = sizeof($codeArray);
@@ -83,7 +101,9 @@ class Passcode{
 		return $ret;
 	}
 
-	// Converts and array of unicodes to string
+	/**
+	*	This function Converts and array of unicodes to string
+	*/ 
 	public static function toString($codeArray){
 		$s = "";
 		foreach ($codeArray as $code) {
@@ -94,7 +114,9 @@ class Passcode{
 		return $s;
 	}
 
-	// Prints and array of unicodes
+	/**
+	*	This function Prints and array of unicodes
+	*/ 
 	public static function printcode($codeArray)
 	{	
 		echo '
@@ -110,15 +132,5 @@ class Passcode{
 			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#FFF;color:#000;padding:10px">&#'.hexdec($codeArray[$i]).'</span>';
 		}
 		echo '</div>';	
-		/*$s = self::toString($codeArray);
-		$s1 = str_split($s);
-		echo '<span style="letter-spacing:20px;font-size:2em">'.$s.'</span>';
-		echo '<br>';
-		return;
-		echo '<div style="background:#555;text-align:center;padding:50px">';
-		for ($i=0; $i < sizeof($s1); $i++) {
-			echo '<span dir="ltr" style="margin-left:2px;font-size: 2em;background:#111;color:#eee;padding:10px">'.$s1[$i].'</span>';
-		}
-		echo '</div>';*/
 	}
 };

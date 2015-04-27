@@ -1,6 +1,13 @@
 <?php
+/**
+*	This file Question.php contains the Logs Question which is the ORM for table 'Questions'
+*	@author Prateek Chandan <prateekchandan5545@gmail.com>
+*/
 
-
+/**
+* The Question Class is the ORM for table 'Questions'
+* ORM Means Object Relational Model
+*/
 class Question extends Eloquent {
 
 

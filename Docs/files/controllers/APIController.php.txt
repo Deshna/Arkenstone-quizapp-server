@@ -495,7 +495,7 @@ class APIController extends BaseController {
 		if($check){
 			return Error::make(1,100,$check);
 		}
-		$ret = file_get_contents("http://bodhitree3.cse.iitb.ac.in:8080/ldap.php?user=".Input::get('ldap_id')."&pass=".Input::get('ldap_password'));
+		$ret = file_get_contents("http://bodhitree3.cse.iitb.ac.in:8080/ldap.php?user=".urlencode(Input::get('ldap_id'))."&pass=".urlencode(Input::get('ldap_password')));
 		if($ret=="Auth"){
 			return Error::make(1,12);
 		}
