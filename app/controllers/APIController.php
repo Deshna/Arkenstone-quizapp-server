@@ -495,20 +495,20 @@ class APIController extends BaseController {
 		if($check){
 			return Error::make(1,100,$check);
 		}
-		$ret = file_get_contents("http://bodhitree3.cse.iitb.ac.in:8080/ldap.php?user=".urlencode(Input::get('ldap_id'))."&pass=".urlencode(Input::get('ldap_password')));
+		$ret = file_get_contents("http://127.0.0.1:8080/ldap.php?user=".urlencode(Input::get('ldap_id'))."&pass=".urlencode(Input::get('ldap_password')));
 		if($ret=="Auth"){
 			return Error::make(1,12);
 		}
 		else if($ret=="Id" || $ret=="Pass" || $ret=="Connect")
 			return Error::make(0,0);
 
-		$ret = json_decode($ret);
-		$ret = (array)$ret;
+		//$ret = json_decode($ret);
+		//$ret = (array)$ret;
 		
 
 		$s = "0";	
-		$data['student_id'] = $ret["employeenumber"]->$s;
-		$data['student_name'] = $ret["cn"]->$s;
+		$data['student_id'] = $ret;
+		$data['student_name'] = $ret;
 		$data['message'] = "Successfully Logged in";
 		return Error::Success($data);
 	}

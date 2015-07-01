@@ -120,7 +120,9 @@ class HomeController extends BaseController {
 	*/
 	public function login()
 	{
+		echo "sfs";
 		$data = Input::all();
+
 
 		if (Input::get('email') == "demo@iitb.ac.in" && Input::get('password') == 'demo'){
 			Auth::login(User::find(1));
@@ -128,15 +130,16 @@ class HomeController extends BaseController {
 		}
 		else
 		{
-			$ldap_id = explode('@', Input::get('email'));
-			if(sizeof($ldap_id) < 2 || $ldap_id[1] != "iitb.ac.in"){
+			/*$ldap_id = explode('@', Input::get('email'));
+			if(sizeof($ldap_id) < 2){
 				$message_arr = array('message' => 'Invalid email');
 		    	return View::make('pages.login', $message_arr);
 			}
-			$ldap_id = $ldap_id[0];
+			$ldap_id = $ldap_id[0];*/
+			$ldap_id = Input::get('email');
 			$check = 0;
 			try {
-				$ret = file_get_contents("http://bodhitree3.cse.iitb.ac.in:8080/ldap.php?user=".$ldap_id."&pass=".Input::get('password'));
+				$ret = file_get_contents("http://127.0.0.1:8080/ldap.php?user=".$ldap_id."&pass=".Input::get('password'));
 			} catch (Exception $e) {
 				$message_arr = array('message' => 'Error Connecting Ldap Script');
 		    	return View::make('pages.login', $message_arr);
@@ -146,7 +149,7 @@ class HomeController extends BaseController {
 				$message_arr = array('message' => 'Invalid username or password!');
 		    	return View::make('pages.login', $message_arr);
 			}
-			try {
+			/*try {
 				$ret = json_decode($ret,true);
 			} catch (Exception $e) {
 				$message_arr = array('message' => 'Invalid username or password!');
@@ -156,15 +159,16 @@ class HomeController extends BaseController {
 			if($ret["employeetype"]["0"] !=="fac" && $ldap_id!="prateekchandan"){
 				$message_arr = array('message' => 'Only instructor can log in');
 		    	return View::make('pages.login', $message_arr);
-			}
+			}*/
 			$email = Input::get('email');
+			
 			$user = User::where('email' , '=' , Input::get('email'))->first();
 
 			if(is_null($user)){
 				$user = new USER;
 				$user->email = $email;
 				$user->password = Hash::make(Input::get('password'));
-				$user->name = $ret["cn"]["0"];
+				$user->name = $email;
 				$user->save();
 			}
 			Auth::login($user);
